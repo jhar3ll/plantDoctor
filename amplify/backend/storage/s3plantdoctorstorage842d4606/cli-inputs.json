@@ -1,0 +1,12 @@
+{
+  "resourceName": "s3plantdoctorstorage842d4606",
+  "bucketName": "plantdoctor-storage-842d4606",
+  "policyUUID": "82b0c432",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}
