@@ -25,7 +25,7 @@ const UserHomeScreen = (props) => {
   }
 const [addPlantVisible, setaddPlantVisible] = useState(false)
 const greeting = `Welcome, ${props.user.attributes.given_name}!`
-console.log(props.user.attributes.sub);
+//console.log(props.user.attributes.sub);
 
   return (
     <View style={styles.container}>
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
   modalView: {
     position: 'absolute',
     height: 500,
+    width: 300,
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,

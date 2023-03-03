@@ -7,6 +7,7 @@ import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
 import UserHomeScreen from '../screens/UserHomeScreen/UserHomeScreen'
 import { Auth, Hub } from 'aws-amplify';
 import { ActivityIndicator, View } from 'react-native';
+import { DataStore } from '@aws-amplify/datastore';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +32,7 @@ const Navigation = () => {
     const listener = data => {
       if (data.payload.event === 'signIn' || data.payload.event === 'signOut'){
         checkUser();
-        
+        DataStore.clear();
       }
     };
 
