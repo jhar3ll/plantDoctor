@@ -57,7 +57,6 @@ const Navigation = () => {
           <>
           <Stack.Screen name='User'>{(props) => <UserHomeScreen {...props} user={user}/>}</Stack.Screen>
           <Stack.Screen name='AddPlants'>{(props) => <AddPlantScreen {...props} user={user}/>}</Stack.Screen>
-          <Stack.Screen name='GetPlants' component={GetPlantsScreen} />
           </>
         ) : (
           <>
