@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Pressable, TextInput, Keyboard} from 'react-native';
+import {StyleSheet, View, Text, Pressable, TextInput} from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
+import { Owner } from '../../models';
 import '@azure/core-asynciterator-polyfill'
 
 const AddPlantScreen = (props) => {
@@ -14,7 +15,8 @@ const handleSubmit = async () => {
     await DataStore.save(
       new Plant({
       "name": plantName,
-      "waterFrequency": Number(waterFrequency)
+      "waterFrequency": Number(waterFrequency),
+      "owner": String(props.user.username)
     })
   );
     props.closeForm()

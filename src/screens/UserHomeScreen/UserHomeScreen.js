@@ -3,8 +3,11 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Modal, Pressable, Alert } from 'react-native';
 import moment from 'moment';
 import AddPlantScreen from '../AddPlant/AddPlantScreen';
+import GetPlantsScreen from '../GetPlants/GetPlantsScreen';
 import { Auth } from 'aws-amplify';
 import Icon  from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+
 
 const UserHomeScreen = (props) => {
   const dateTime = moment().format('dddd, MMM. D, YYYY');
@@ -13,6 +16,7 @@ const UserHomeScreen = (props) => {
   const settingIcon = <Icon name="settings" size={20} color='#000' />
   const closeIcon = <Icon name="close-circle" size={30} color='#000' />
   const greeting = `Welcome, ${props.user.attributes.given_name}!`
+  const navigation = useNavigation();
 
   const signOut = () => {
     return Alert.alert(
@@ -36,6 +40,7 @@ const UserHomeScreen = (props) => {
     <View style={styles.container}>
       <Text style={styles.welcomeUser}>{greeting}</Text>
       <Text style={styles.dateText}>{dateTime}</Text>
+      <Text onPress={() => navigation.navigate('GetPlants', { screen: 'GetPlantsScreen'}) }>Get Plants</Text>
       <Modal
         animationType="slide"
         transparent={true}
@@ -59,7 +64,7 @@ const UserHomeScreen = (props) => {
         onRequestClose={() => {setaddPlantVisible(!addPlantVisible)}}>
         <View style={styles.addPlantView}>
           <View style={styles.addPlantForm}>
-            <AddPlantScreen closeForm={closeForm}/>
+            <AddPlantScreen closeForm={closeForm} user={props.user}/>
             <Pressable
               style={styles.closeButton}
               onPress={() => {setaddPlantVisible(!addPlantVisible)}} >

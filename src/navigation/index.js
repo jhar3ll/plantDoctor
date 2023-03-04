@@ -8,6 +8,8 @@ import UserHomeScreen from '../screens/UserHomeScreen/UserHomeScreen'
 import { Auth, Hub } from 'aws-amplify';
 import { ActivityIndicator, View } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
+import GetPlantsScreen from '../screens/GetPlants/GetPlantsScreen';
+import AddPlantScreen from '../screens/AddPlant/AddPlantScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,9 +56,12 @@ const Navigation = () => {
         {user ? (
           <>
           <Stack.Screen name='User'>{(props) => <UserHomeScreen {...props} user={user}/>}</Stack.Screen>
+          <Stack.Screen name='AddPlants'>{(props) => <AddPlantScreen {...props} user={user}/>}</Stack.Screen>
+          <Stack.Screen name='GetPlants' component={GetPlantsScreen} />
           </>
         ) : (
           <>
+            
             <Stack.Screen name='Home' component={HomeScreen} />
             <Stack.Screen name='SignIn' component={SignInScreen} />
             <Stack.Screen name='SignUp' component={SignUpScreen} />
