@@ -1,4 +1,4 @@
-type Plant @model @auth(rules: [{allow: owner}, {allow: groups, groups: ["Admin"], operations: [read, create, update, delete]}]) {
+type Plant @model @auth(rules: [{allow: owner}, {allow: groups, groups: ["us-east-1_59IL2eamW_Facebook"], operations: [read, create, update, delete]}, {allow: private}, {allow: public}, {allow: private, provider: iam}]) {
   id: ID!
   name: String!
   waterFrequency: Int!

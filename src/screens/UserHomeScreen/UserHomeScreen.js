@@ -9,8 +9,11 @@ import Icon  from 'react-native-vector-icons/Ionicons';
 const UserHomeScreen = (props) => {
   const dateTime = moment().format('dddd, MMM. D, YYYY');
   const [optionsVisible, setOptionsVisible] = useState(false)
+  const [addPlantVisible, setaddPlantVisible] = useState(false)
   const settingIcon = <Icon name="settings" size={20} color='#000' />
   const closeIcon = <Icon name="close-circle" size={30} color='#000' />
+  const greeting = `Welcome, ${props.user.attributes.given_name}!`
+
   const signOut = () => {
     return Alert.alert(
       "Sign out", 
@@ -23,8 +26,10 @@ const UserHomeScreen = (props) => {
       {text: 'No'}
     ])
   }
-const [addPlantVisible, setaddPlantVisible] = useState(false)
-const greeting = `Welcome, ${props.user.attributes.given_name}!`
+
+  const closeForm = () => {
+    setaddPlantVisible(false)
+  }
 //console.log(props.user.attributes.sub);
 
   return (
@@ -52,9 +57,9 @@ const greeting = `Welcome, ${props.user.attributes.given_name}!`
         transparent={true}
         visible={addPlantVisible}
         onRequestClose={() => {setaddPlantVisible(!addPlantVisible)}}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <AddPlantScreen />
+        <View style={styles.addPlantView}>
+          <View style={styles.addPlantForm}>
+            <AddPlantScreen closeForm={closeForm}/>
             <Pressable
               style={styles.closeButton}
               onPress={() => {setaddPlantVisible(!addPlantVisible)}} >
@@ -119,17 +124,17 @@ const styles = StyleSheet.create({
     top: 120,
     right: 75
   },
-  centeredView: {
+  addPlantView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
 
   },
-  modalView: {
+  addPlantForm: {
     position: 'absolute',
     height: 500,
-    width: 300,
+    width: 320,
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
@@ -174,8 +179,8 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    bottom: 0,
-    marginBottom: 20
+    top: 0,
+    marginTop: 20
   },
   closeModal: {
     position: 'relative',

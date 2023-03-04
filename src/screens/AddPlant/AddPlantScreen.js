@@ -1,67 +1,54 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Pressable} from 'react-native';
-import t from 'tcomb-form-native'
+import {StyleSheet, View, Text, Pressable, TextInput, Keyboard} from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 import '@azure/core-asynciterator-polyfill'
 
-const Form = t.form.Form;
-const createPlant = t.struct({
-  name: t.String,
-  waterFrequency: t.Number
-});
-
-const AddPlantScreen = () => {
-  const [form, setForm] = useState(null); 
-  const [formValues, setFormValues] = useState({});
+const AddPlantScreen = (props) => {
   const [formError, setFormError] = useState('')
-  
-  const options = {
-    auto: 'placeholders',
-    fields: {
-      name: {
-        placeholder: 'plant name',
-        placeholderTextColor: '#808080',
-      },
-      waterFrequency: {
-        placeholder: 'waterings per day',
-        placeholderTextColor: '#808080',
-      }
-    }, 
-  };
-const handleSubmit = async () => {
+  const [plantName, setPlantName] = useState(undefined)
+  const [waterFrequency, setWaterFrequency] = useState(undefined)
+
+const handleSubmit = async () => {  
   try {
     await DataStore.save(
       new Plant({
-      "name": formValues.name,
-      "waterFrequency": Number(formValues.waterFrequency)
+      "name": plantName,
+      "waterFrequency": Number(waterFrequency)
     })
   );
+    props.closeForm()
     console.log("success!")
   } catch (error) {
+    console.log(error)
     setFormError(error.toString())
   }
 }
 
-useEffect(() => {
-  setFormError(undefined)
-}, [formValues]);
-
 return (
     <>
       <View style={styles.addPlantView}>
-          <Form
-            ref={(c) => setForm(c)}
-            value={formValues}
-            type={createPlant}
-            options={options}
-            onChange={setFormValues}
+        <TextInput
+          style={styles.input}
+          onChangeText={setPlantName}
+          value={plantName}
+          placeholder="plant name"
+          placeholderTextColor={"#808080"}
           />
+
+        <TextInput
+          style={styles.input}
+          onChangeText={setWaterFrequency}
+          value={waterFrequency}
+          placeholder="waterings per day"
+          keyboardType="numeric"
+          placeholderTextColor={"#808080"}
+          />
+
           <Pressable style={styles.addPlantButton} underlayColor='#fff' onPress={handleSubmit}>
-          <Text style={styles.addPlantButtonText}>Add Plant</Text>
+            <Text style={styles.addPlantButtonText}>Add Plant</Text>
           </Pressable>
       </View>
-      <Text style={{color:'red'}}>{formError}</Text>
     </>
   );
 };
@@ -69,27 +56,42 @@ return (
 const styles = StyleSheet.create({
   addPlantView: {
     position: 'absolute',
+    alignContent: 'center',
+    alignItems: 'center',
     marginTop: 80,
     height: 'auto',
     marginBottom: 20
   },
+  input: {
+    top: 30,
+    height: 40,
+    width: 280,
+    margin: 20,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 30
+  },
   addPlantButton: {
+    flex: 1,
     position: 'absolute',
+    alignContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#B3EFA9',
     marginTop: 10,
     top: 100,
-    width: 152,
-    height: 30,
+    width: 150,
+    height: 60,
     padding: 10,
     borderRadius: 30,
     borderWidth: 1,
     borderColor: '#000',
-    marginTop: 35
+    marginTop: 100
   },
   addPlantButtonText: {
-    position: 'absolute',
-    padding: 5,
-    marginLeft: 40
-  }
+    position: 'relative',
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 24,
+  }, 
 });
+
 export default AddPlantScreen;
