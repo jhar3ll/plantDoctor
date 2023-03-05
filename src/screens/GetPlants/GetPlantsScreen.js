@@ -1,5 +1,5 @@
 import React, {useEffect,useState} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Image} from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 
@@ -21,7 +21,6 @@ const GetPlantsScreen = (props) => {
   const deletePlant = async () => {
     try {
       await DataStore.delete(Plant, (plant) => plant.waterFrequency.gt(0))
-      console.log('success')
     } catch (error){
       console.log(error)
     }
@@ -36,9 +35,10 @@ return (
         {
           userPlants.map((plant) => (
             <>
-            <Text>.
-            <Text>Plant name: {plant.name}, waterFrequency: {plant.waterFrequency}</Text>
-            </Text>
+            <View style={styles.plant}>
+            <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')}></Image>
+            <Text style={styles.plantText}>{plant.name} Plant, waterFrequency: {plant.waterFrequency}</Text>
+            </View>
             </>
           ))
         }
@@ -49,16 +49,20 @@ return (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
   }, 
-  getPlants: {
-    position: 'absolute'
+  plant: {
+    marginBottom: 50
   },
-  deletePlant: {
+  cactus: {
     position: 'absolute',
-    bottom: 500
-  }
+    height: 35,
+    width: 35
+  },
+  plantText: {
+    position: 'absolute',
+    marginLeft: 40,
+    marginTop: 10,
+  },
 });
 
 export default GetPlantsScreen;
