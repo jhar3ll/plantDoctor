@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Pressable, TextInput} from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
-import { Owner } from '../../models';
 import '@azure/core-asynciterator-polyfill'
 
 const AddPlantScreen = (props) => {

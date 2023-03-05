@@ -12,6 +12,7 @@ const UserHomeScreen = (props) => {
   const dateTime = moment().format('dddd, MMM. D, YYYY');
   const [optionsVisible, setOptionsVisible] = useState(false)
   const [addPlantVisible, setaddPlantVisible] = useState(false)
+  const [newPlant, setNewPlant] = useState(false);
   const settingIcon = <Icon name="settings" size={20} color='#000' />
   const closeIcon = <Icon name="close-circle" size={30} color='#000' />
   const addPlantIcon = <Icon name="add" size={55} />
@@ -32,6 +33,7 @@ const UserHomeScreen = (props) => {
 
   const closeForm = () => {
     setaddPlantVisible(false)
+    setNewPlant(true)
   }
 
   return (
@@ -40,7 +42,7 @@ const UserHomeScreen = (props) => {
       <Text style={styles.dateText}>{dateTime}</Text>
       <Pressable style={styles.options} onPress={() => setOptionsVisible(true)}>{settingIcon}</Pressable>
       <View style={styles.listPlants}>
-        <GetPlantsScreen user={props.user} /> 
+        <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} /> 
       </View>
       <Modal animationType="slide" transparent={true} visible={optionsVisible}>
           <View style={styles.optionsView}></View>
