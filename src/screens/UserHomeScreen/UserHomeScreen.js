@@ -14,6 +14,7 @@ const UserHomeScreen = (props) => {
   const [addPlantVisible, setaddPlantVisible] = useState(false)
   const settingIcon = <Icon name="settings" size={20} color='#000' />
   const closeIcon = <Icon name="close-circle" size={30} color='#000' />
+  const addPlantIcon = <Icon name="add" size={55} />
   const greeting = `Welcome, ${props.user.attributes.given_name}!`
 
   const signOut = () => {
@@ -37,46 +38,26 @@ const UserHomeScreen = (props) => {
     <View style={styles.container}>
       <Text style={styles.welcomeUser}>{greeting}</Text>
       <Text style={styles.dateText}>{dateTime}</Text>
+      <Pressable style={styles.options} onPress={() => setOptionsVisible(true)}>{settingIcon}</Pressable>
       <View style={styles.listPlants}>
-        <GetPlantsScreen user={props.user}/>
+        <GetPlantsScreen user={props.user} /> 
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={optionsVisible}
-        onRequestClose={() => {setOptionsVisible(!optionsVisible)}}>
+      <Modal animationType="slide" transparent={true} visible={optionsVisible}>
           <View style={styles.optionsView}></View>
             <Text style={styles.signOutText} onPress={signOut}>Sign Out</Text>
-            <Pressable
-              style={styles.closeOptions}
-              onPress={() => {setOptionsVisible(!optionsVisible)}} >
-              <Text style={styles.closeOptionsText}>{closeIcon}</Text>
-            </Pressable>
+            <Pressable style={styles.closeOptions} onPress={() => {setOptionsVisible(false)}}>{closeIcon}</Pressable>
       </Modal>
-      <Pressable style={styles.options} 
-      onPress={() => setOptionsVisible(true)}>{settingIcon}</Pressable>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={addPlantVisible}
-        onRequestClose={() => {setaddPlantVisible(!addPlantVisible)}}>
+      <Modal animationType="slide" transparent={true} visible={addPlantVisible}>
         <View style={styles.addPlantView}>
           <View style={styles.addPlantForm}>
             <AddPlantScreen closeForm={closeForm} user={props.user}/>
-            <Pressable
-              style={styles.closeButton}
-              onPress={() => {setaddPlantVisible(!addPlantVisible)}} >
-              <Text style={styles.closeOptionsText}>{closeIcon}</Text>
-            </Pressable>
+            <Pressable style={styles.closeButton} onPress={() => {setaddPlantVisible(false)}}>{closeIcon}</Pressable>
           </View>
         </View>
       </Modal>
-      <Pressable
-        style={styles.addPlant}
-        onPress={() => setaddPlantVisible(true)}>
-        <Text style={styles.addPlantText}>+</Text>
-      </Pressable>
+
+      <Pressable style={styles.addPlantButton} onPress={() => setaddPlantVisible(true)}>{addPlantIcon}</Pressable>
       <StatusBar style="auto" />
     </View>
   );
@@ -85,14 +66,34 @@ const UserHomeScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     backgroundColor: '#FFEEE1',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  welcomeUser: {
+    position: 'absolute',
+    alignItems: 'center',
+    top: 50,
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 42,
+  },
+  dateText: {
+    position: 'absolute',
+    top: 110,
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 24,
+    textDecorationLine: 'underline'
   },
   options: {
     position: 'absolute',
     top: 120,
     right: 30
+  },
+  listPlants: {
+    position: 'absolute',
+    top: 300,
+    left: 0
   },
   optionsView: {
     position: 'absolute',
@@ -133,7 +134,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
-
   },
   addPlantForm: {
     position: 'absolute',
@@ -152,48 +152,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
-  welcomeUser: {
-    position: 'absolute',
-    justifyContent: 'center',
-    top: 50,
-    fontFamily: 'ChalkboardSE-Regular',
-    fontSize: 42,
-  },
-  dateText: {
-    position: 'absolute',
-    top: 110,
-    fontFamily: 'ChalkboardSE-Regular',
-    fontSize: 24,
-    textDecorationLine: 'underline'
-  },
-  addPlant: {
-    position: 'absolute',
-    width: 60,
-    height: 60,
-    bottom: 50,
-    borderRadius: 52,
-    backgroundColor: '#B3EFA9'
-  },
-  addPlantText: {
-    position: 'absolute',
-    right: 14,
-    fontSize: 50,
-    width: 32,
-    bottom: 5
-  },
   closeButton: {
     position: 'absolute',
     top: 0,
     marginTop: 20
   },
-  closeModal: {
-    position: 'relative',
-    color: '#6495ED',
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-    textDecorationColor: '#6495ED',
-    fontSize: 16
-  },
+  addPlantButton: {
+    position: 'absolute',
+    alignItems: 'center',
+    width: 60,
+    height: 60,
+    bottom: 50,
+    borderRadius: 52,
+    backgroundColor: '#B3EFA9'
+  }
 });
 
 export default UserHomeScreen;

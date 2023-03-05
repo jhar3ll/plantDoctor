@@ -2,17 +2,17 @@ import React, {useEffect,useState} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
-import { ListItem } from 'react-native-elements';
-import { ActivityIndicator } from 'react-native';
 
 const GetPlantsScreen = (props) => {
-  const user = props.user.username
-  const [userPlants, setUserPlants] = useState([])
+  const user = props.user.username;
+  const [userPlants, setUserPlants] = useState([]);
  
   const getPlants = async () => {
     try {
-      const models = await DataStore.query(Plant, p => p.owner.eq(user));
-      models.map(m => setUserPlants(m));
+      const models = []
+      const plants = await DataStore.query(Plant, p => p.owner.eq(user));
+      plants.map(p => models.push(p))
+      setUserPlants(models)
     } catch (error){
       console.log(error)
     }
@@ -27,39 +27,27 @@ const GetPlantsScreen = (props) => {
     }
   }
 
-  const renderPlants = () => {
-    userPlants.map((plant, index) => (
-      <ListItem
-      key={index}
-      name={plant.name}
-      waterFrequency={plant.waterFrequency}
-      />
-    ))
-  }
-
   useEffect(() => {
     getPlants();
   }, [])
 
-  if (userPlants === undefined){
-    return(
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator />
-      </View>
-    )
-  }
-  
-
-  console.log(userPlants);
 return (   
-      <View style={styles.root}>
-        
+      <View style={styles.container}>
+        {
+          userPlants.map((plant) => (
+            <>
+            <Text>.
+            <Text>Plant name: {plant.name}, waterFrequency: {plant.waterFrequency}</Text>
+            </Text>
+            </>
+          ))
+        }
       </View>
   );
 };
 
 const styles = StyleSheet.create({
-  root: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
