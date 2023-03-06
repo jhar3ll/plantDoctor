@@ -20,7 +20,6 @@ const Navigation = () => {
     try {
       const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
       setUser(authUser);
-      return authUser.username
     } catch (e) {
       setUser(null);
     }
@@ -34,6 +33,8 @@ const Navigation = () => {
     const listener = data => {
       if (data.payload.event === 'signIn' || data.payload.event === 'signOut'){
         checkUser();
+      }
+      else if (data.payload.event === 'signOut'){
         DataStore.clear();
       }
     };

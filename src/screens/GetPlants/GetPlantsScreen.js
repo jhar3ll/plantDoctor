@@ -2,17 +2,19 @@ import React, {useEffect,useState} from 'react';
 import {StyleSheet, View, Text, Image, FlatList} from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
+import Icon  from 'react-native-vector-icons/Ionicons';
+import Checkmark from '../../components/Checkmark';
 
 const GetPlantsScreen = (props) => {
   const user = props.user.username;
   const [userPlants, setUserPlants] = useState([]);
+ 
 
   const getPlants = async () => {
     try {
-      const models = []
-      const plants = await DataStore.query(Plant, p => p.owner.eq(user));
-      plants.map(p => models.push(p))
-      setUserPlants(models)
+      const plants = await DataStore.query(Plant, p => p.owner.eq(user))
+      let sortedArr = plants.sort((a,b) => a.waterFrequency < b.waterFrequency)
+      setUserPlants(sortedArr);
       props.setNewPlant(false)
     } catch (error){
       console.log(error)
@@ -28,6 +30,15 @@ const GetPlantsScreen = (props) => {
     }
   }
 
+  const renderCheck = (waterFrequency) => {
+    const checks = [];
+    for (let i=0; i<waterFrequency; i++){
+      checks.push(<Checkmark />)
+    }
+    console.log(checks)
+    return checks;
+  }
+
   useEffect(() => {
     getPlants();
   }, [props.newPlant])
@@ -36,11 +47,13 @@ return (
       <View style={styles.container}>
         {
           userPlants.map((plant, index) => (
+            key=index,
             <>
             {/* <FlatList key={index}></FlatList> */}
             <View style={styles.plant}>
             <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')}></Image>
-            <Text style={styles.plantText}>{plant.name} Plant, waterFrequency: {plant.waterFrequency}</Text>
+            <Text style={styles.plantText}>{plant.name}</Text>
+             <Text style={styles.plantWatering}>{renderCheck(plant.waterFrequency)}</Text>
             </View>
             </>
           ))
@@ -54,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
   }, 
   plant: {
-    marginBottom: 50
+    marginBottom: 30
   },
   cactus: {
     position: 'absolute',
@@ -62,9 +75,15 @@ const styles = StyleSheet.create({
     width: 35
   },
   plantText: {
+    position: 'relative',
+    marginLeft: 50,
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 24,
+  },
+  plantWatering: {
     position: 'absolute',
-    marginLeft: 40,
-    marginTop: 10,
+    textAlign: 'right',
+    right: -200
   },
 });
 

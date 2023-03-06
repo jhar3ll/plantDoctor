@@ -5,7 +5,6 @@ import { Plant } from '../../models'
 import '@azure/core-asynciterator-polyfill'
 
 const AddPlantScreen = (props) => {
-  const [formError, setFormError] = useState('')
   const [plantName, setPlantName] = useState(undefined)
   const [waterFrequency, setWaterFrequency] = useState(undefined)
 
