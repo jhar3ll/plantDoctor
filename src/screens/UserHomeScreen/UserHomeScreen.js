@@ -15,7 +15,7 @@ const UserHomeScreen = (props) => {
   const [newPlant, setNewPlant] = useState(false);
   const settingIcon = <Icon name="settings" size={20} color='#000' />
   const closeIcon = <Icon name="close-circle" size={30} color='#000' />
-  const addPlantIcon = <Icon name="add" size={55} />
+  const addPlantIcon = <Icon name="add" size={55} style={styles.addPlantIcon}/>
   const greeting = `Welcome, ${props.user.attributes.given_name}!`
 
   const signOut = () => {
@@ -59,7 +59,9 @@ const UserHomeScreen = (props) => {
         </View>
       </Modal>
 
-      <Pressable style={styles.addPlantButton} onPress={() => setaddPlantVisible(true)}>{addPlantIcon}</Pressable>
+      <Pressable style={styles.addPlantBackground} onPress={() => setaddPlantVisible(true)}> 
+       <Icon name="add" size={55} style={styles.addPlantIcon}/>
+      </Pressable>
       <StatusBar style="auto" />
     </View>
   );
@@ -159,14 +161,24 @@ const styles = StyleSheet.create({
     top: 0,
     marginTop: 20
   },
-  addPlantButton: {
+  addPlantBackground: {
     position: 'absolute',
     alignItems: 'center',
     width: 60,
     height: 60,
     bottom: 50,
-    borderRadius: 52,
+    borderRadius: 50,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
     backgroundColor: '#B3EFA9'
+  },
+  addPlantIcon: {
+    left: 2
   }
 });
 
