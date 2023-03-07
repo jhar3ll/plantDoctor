@@ -35,7 +35,6 @@ const GetPlantsScreen = (props) => {
     for (let i=0; i<waterFrequency; i++){
       checks.push(<Checkmark />)
     }
-    console.log(checks)
     return checks;
   }
 
@@ -50,10 +49,11 @@ return (
             key=index,
             <>
             {/* <FlatList key={index}></FlatList> */}
+            
             <View style={styles.plant}>
             <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')}></Image>
             <Text style={styles.plantText}>{plant.name}</Text>
-             <Text style={styles.plantWatering}>{renderCheck(plant.waterFrequency)}</Text>
+            <Icon style={styles.plantWatering}>{renderCheck(plant.waterFrequency)}</Icon>
             </View>
             </>
           ))
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
   }, 
   plant: {
-    marginBottom: 30
+    marginBottom: 60
   },
   cactus: {
     position: 'absolute',
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     width: 35
   },
   plantText: {
-    position: 'relative',
+    position: 'absolute',
     marginLeft: 50,
     fontFamily: 'ChalkboardSE-Regular',
     fontSize: 24,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   plantWatering: {
     position: 'absolute',
     textAlign: 'right',
-    right: -200
+    right: -420
   },
 });
 
