@@ -25,7 +25,7 @@ const SignUpScreen = () => {
     hideAllDefaults: true,
     signUpFields: [
       {
-        label: "First name",
+        label: "Preferred name",
         key: "given_name",
         required: true,
         displayOrder: 1,

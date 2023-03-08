@@ -1,21 +1,19 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Modal, Pressable, Alert } from 'react-native';
+import { StyleSheet, Text, View, Modal, Pressable, Alert } from 'react-native';
 import moment from 'moment';
 import AddPlantScreen from '../AddPlant/AddPlantScreen';
 import { Auth } from 'aws-amplify';
 import Icon  from 'react-native-vector-icons/Ionicons';
 import GetPlantsScreen from '../GetPlants/GetPlantsScreen';
 
-
 const UserHomeScreen = (props) => {
   const dateTime = moment().format('dddd, MMM. D, YYYY');
-  const [optionsVisible, setOptionsVisible] = useState(false)
-  const [addPlantVisible, setaddPlantVisible] = useState(false)
+  const [optionsVisible, setOptionsVisible] = useState(false);
+  const [addPlantVisible, setaddPlantVisible] = useState(false);
   const [newPlant, setNewPlant] = useState(false);
-  const settingIcon = <Icon name="settings" size={20} color='#000' />
+  const settingIcon = <Icon name="settings" size={25} color='#000' />
   const closeIcon = <Icon name="close-circle" size={30} color='#000' />
-  const addPlantIcon = <Icon name="add" size={55} style={styles.addPlantIcon}/>
   const greeting = `Welcome, ${props.user.attributes.given_name}!`
 
   const signOut = () => {
@@ -25,7 +23,10 @@ const UserHomeScreen = (props) => {
     [
       {
         text: 'Yes',
-        onPress: () => {Auth.signOut();}
+        onPress: () => {
+          Auth.signOut();
+          props.setUser(undefined)
+        }
       }, 
       {text: 'No'}
     ])
@@ -91,8 +92,8 @@ const styles = StyleSheet.create({
   },
   options: {
     position: 'absolute',
-    top: 120,
-    right: 30
+    top: 116,
+    right: 20
   },
   listPlants: {
     position: 'absolute',
