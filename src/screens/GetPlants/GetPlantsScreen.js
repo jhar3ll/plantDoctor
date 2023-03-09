@@ -1,17 +1,17 @@
 import React, {useEffect,useState} from 'react';
-import {StyleSheet, View, Text, Image, Pressable, Modal } from 'react-native';
+import {StyleSheet, View, Text, Image, Pressable, TextInput } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 import Icon  from 'react-native-vector-icons/Ionicons';
 import Checkmark from '../../components/Checkmark';
-import { useNavigation } from '@react-navigation/native';
+import { Overlay } from '@rneui/themed';
 
 const GetPlantsScreen = (props) => {
-  const navigation = useNavigation();
   const user = props.user.username;
   const [userPlants, setUserPlants] = useState([]);
   const [userPlant, setUserPlant] = useState(undefined);
   const [overlayVisible, setOverlayVisible] = useState(false);
+  const [updatedPlant, setUpdatedPlant] = useState({})
  
   const getAllPlants = async () => {
     try {
@@ -24,18 +24,51 @@ const GetPlantsScreen = (props) => {
     }
   }
 
-  const getPlant = async (plantId) => {
-    try {
-      let plant = await DataStore.query(Plant, p => p.id.eq(plantId));
-      setUserPlant(plant);
-      props.setNewPlant(false)
-    } catch (error){
-      console.log(error)
-    }
+  const getPlant = (plant) => {
+    let times = ''
+    plant.waterFrequency === 1 ? times = 'time' : times = 'times' 
+     setUserPlant(
+      <View style={styles.viewPlant}> 
+        <Image style={styles.viewPlantCactus} source={require('../../../assets/icons/cactus.png')} />
+        <Text style={styles.viewPlantName}>{plant.name}</Text>
+        <Text style={styles.viewPlantWater}> Needs water {plant.waterFrequency} {times} per day.</Text>
+
+        <View style={styles.updatePlantView}>
+          <TextInput
+            style={styles.input}
+            //onChangeText={setUpdatedPlant}
+            //value={plantName}
+            placeholder="plant name"
+            placeholderTextColor={"#808080"}
+            defaultValue={plant.name}
+            />
+
+          <TextInput
+            style={styles.input}
+            // onChangeText={setWaterFrequency}
+            // value={waterFrequency}
+            placeholder="waterings per day"
+            keyboardType="numeric"
+            placeholderTextColor={"#808080"}
+            defaultValue={plant.waterFrequency.toString()}
+            />
+        </View>
+
+        <Pressable style={styles.updatePlantButton} underlayColor='#fff' onPress={() => updatePlant(plant)}>
+          <Text style={styles.updatePlantButtonText}>Update Plant</Text>
+        </Pressable>
+        <Pressable style={styles.deletePlantButton} underlayColor='#fff' onPress={() => deletePlant(plant)}>
+          <Text style={styles.deletePlantButtonText}>Delete Plant</Text>
+        </Pressable>
+      </View>
+    )
   }
   
+  const updatePlant = async (plant) => {
 
-  const deletePlant = async () => {
+  }
+
+  const deletePlant = async (plant) => {
     try {
       await DataStore.delete(Plant, (plant) => plant.waterFrequency.gt(0))
       props.setNewPlant(true)
@@ -52,24 +85,27 @@ const GetPlantsScreen = (props) => {
     return checks;
   }
 
-  const toggleOverlay = (plantId) => {
+  const toggleOverlay = () => {
     setOverlayVisible(!overlayVisible);
   }
+
   useEffect(() => {
     getAllPlants();
   }, [props.newPlant])
 
 return (   
       <View style={styles.container}>
-         <Modal animationType="slide" transparent={true} visible={overlayVisible}>
-          <View style={styles.viewPlant}></View>
-            <Text style={styles.signOutText}>Edit Plant here</Text>
-          </Modal>
+         <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
+           <View>{userPlant}</View> 
+            
+            <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
+          </Overlay>
+
         {
           userPlants.map((plant) => {
             return(
             <View key={plant.id} style={styles.plant} >
-              <Pressable onPress={() => setOverlayVisible(!overlayVisible)}>
+              <Pressable onPress={() => [setOverlayVisible(!overlayVisible), getPlant(plant)]}>
                 <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')} />
               </Pressable>
               <Text style={styles.plantText}>{plant.name}</Text>
@@ -85,7 +121,27 @@ return (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
+    width: '100%'
   }, 
+  viewPlantView: {
+    height: '85%',
+    width: '85%',
+    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 4,
+  },
+  closeOverlay: {
+    position: 'absolute',
+    bottom: 20
+  },
   plant: {
     marginBottom: 60
   },
@@ -105,6 +161,79 @@ const styles = StyleSheet.create({
     position: 'absolute',
     textAlign: 'right',
     right: -420
+  },
+  
+  viewPlant: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  viewPlantCactus: {
+    position: 'absolute',
+    height: 250,
+    width: 250,
+    alignSelf: 'center'
+  }, 
+  viewPlantName:{
+    position: 'absolute',
+    marginTop: 270,
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 48,
+  },
+  viewPlantWater: {
+    fontFamily: 'ChalkboardSE-Regular',
+    top: 350,
+    fontSize: 24,
+    fontStyle: 'italic'
+  },
+  updatePlantButton: {
+    flex: 1,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    left: 0,
+    backgroundColor: '#B3EFA9',
+    bottom: 100,
+    width: 150,
+    height: 60,
+    padding: 10,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#000',
+  },
+  updatePlantButtonText: {
+    position: 'absolute',
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 20,
+  }, 
+  deletePlantButton: {
+    flex: 1,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 0,
+    backgroundColor: '#B3EFA9',
+    bottom: 100,
+    width: 150,
+    height: 60,
+    padding: 10,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#000',
+  },
+  deletePlantButtonText: {
+    position: 'absolute',
+    fontFamily: 'ChalkboardSE-Regular',
+    color: 'red',
+    fontSize: 20,
+  }, 
+  input: {
+    top: 30,
+    height: 40,
+    width: 280,
+    margin: 20,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 30
   },
 });
 

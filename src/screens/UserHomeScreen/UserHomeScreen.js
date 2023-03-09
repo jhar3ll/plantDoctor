@@ -43,7 +43,7 @@ const UserHomeScreen = (props) => {
       <Text style={styles.dateText}>{dateTime}</Text>
       <Pressable style={styles.options} onPress={() => setOptionsVisible(true)}>{settingIcon}</Pressable>
       <View style={styles.listPlants}>
-        <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} /> 
+        <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} closeIcon={closeIcon}/> 
       </View>
       <Modal animationType="slide" transparent={true} visible={optionsVisible}>
           <View style={styles.optionsView}></View>
@@ -159,7 +159,6 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 0,
     marginTop: 20
   },
   addPlantBackground: {
