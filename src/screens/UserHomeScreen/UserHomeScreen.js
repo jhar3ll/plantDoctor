@@ -34,7 +34,7 @@ const UserHomeScreen = (props) => {
 
   const closeForm = () => {
     setaddPlantVisible(false)
-    setNewPlant(true)
+    setNewPlant(!newPlant)
   }
 
   return (

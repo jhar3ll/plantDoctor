@@ -30,6 +30,7 @@ return (
       <View style={styles.addPlantView}>
         <TextInput
           style={styles.input}
+          clearButtonMode='while-editing'
           onChangeText={setPlantName}
           value={plantName}
           placeholder="plant name"
@@ -38,6 +39,7 @@ return (
 
         <TextInput
           style={styles.input}
+          clearButtonMode='while-editing'
           onChangeText={setWaterFrequency}
           value={waterFrequency}
           placeholder="waterings per day"
