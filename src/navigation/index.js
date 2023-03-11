@@ -20,8 +20,9 @@ const Navigation = () => {
     try {
       const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
       setUser(authUser);
-    } catch (e) {
+    } catch (error) {
       setUser(null);
+      console.log('checkUser', error)
     }
   }
 

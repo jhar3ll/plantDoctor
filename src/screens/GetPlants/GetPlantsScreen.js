@@ -15,12 +15,13 @@ const GetPlantsScreen = (props) => {
  
   const getAllPlants = async () => {
     try {
-      let plants = (await DataStore.query(Plant, p => p.owner.eq(user))
-      ).sort((a,b) => a.name > b.name ? 1 : -1);
+      let plants = (await DataStore.query(Plant, p => p.waterFrequency.gt(0))
+      ).filter(p => p.owner === user)
+      .sort((a,b) => a.name > b.name ? 1 : -1);
       setUserPlants(plants);
-      props.setNewPlant(false)
+      props.setNewPlant(!props.newPlant);
     } catch (error){
-      console.log(error)
+      console.log('getAllPlants', error)
     }
   }
 
@@ -45,26 +46,26 @@ const GetPlantsScreen = (props) => {
   }, [props.newPlant])
 
 return (   
-      <View style={styles.container}>
-        <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
-          <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} newPlant={props.newPlant} setNewPlant={props.setNewPlant}/>
-          <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
-        </Overlay>
+    <View style={styles.container}>
+      <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
+        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} newPlant={props.newPlant} setNewPlant={props.setNewPlant}/>
+        <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
+      </Overlay>
 
-        {
-          userPlants.map((plant) => {
-            return(
-              <View key={plant.id} style={styles.plant} >
-                <Pressable onPress={() => [setOverlayVisible(!overlayVisible), getPlant(plant)]}>
-                  <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')} />
-                </Pressable>
-                <Text style={styles.plantText}>{plant.name}</Text>
-                <Icon style={styles.plantWatering}>{renderCheck(plant.waterFrequency)}</Icon>
-              </View>
-            )
-          })
-        }
-      </View>
+      {
+        userPlants.map((plant) => {
+          return(
+            <View key={plant.id} style={styles.plant} >
+              <Pressable onPress={() => [setOverlayVisible(!overlayVisible), getPlant(plant)]}>
+                <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')} />
+              </Pressable>
+              <Text style={styles.plantText}>{plant.name}</Text>
+              <Icon style={styles.plantWatering}>{renderCheck(plant.waterFrequency)}</Icon>
+            </View>
+          )
+        })
+      }
+    </View>
   );
 };
 

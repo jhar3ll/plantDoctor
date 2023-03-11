@@ -3,11 +3,11 @@ import { StyleSheet, View, Text, Pressable, TextInput, TouchableWithoutFeedback 
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 import '@azure/core-asynciterator-polyfill'
-import { Keyboard } from 'react-native';
 
 const AddPlantScreen = (props) => {
-  const [plantName, setPlantName] = useState(undefined)
-  const [waterFrequency, setWaterFrequency] = useState(undefined)
+  const [plantName, setPlantName] = useState(undefined);
+  const [waterFrequency, setWaterFrequency] = useState(undefined);
+  const [formError, setFormError] = useState('');
 
 const handleSubmit = async () => {  
   try {
@@ -18,19 +18,21 @@ const handleSubmit = async () => {
       "owner": String(props.user.username)
     })
   );
-    props.closeForm()
-    console.log("success!")
+    props.closeForm();
+    console.log("success!");
   } catch (error) {
-    console.log(error)
-    setFormError(error.toString())
+    console.log(error);
+    setFormError(error.toString());
   }
 }
 
 return (
   <>
     <View style={styles.addPlantView}>
+      <Text style={{color: 'red'}}>{formError}</Text>
       <TextInput
         style={styles.input}
+        onFocus={() => setFormError('')}
         clearButtonMode='while-editing'
         onChangeText={setPlantName}
         value={plantName}
@@ -40,6 +42,7 @@ return (
 
       <TextInput
         style={styles.input}
+        onFocus={() => setFormError('')}
         clearButtonMode='while-editing'
         onChangeText={setWaterFrequency}
         value={waterFrequency}
@@ -51,6 +54,7 @@ return (
         <Pressable style={styles.addPlantButton} underlayColor='#fff' onPress={handleSubmit}>
           <Text style={styles.addPlantButtonText}>Add Plant</Text>
         </Pressable>
+        
     </View>
   </>
   );

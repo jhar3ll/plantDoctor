@@ -7,9 +7,19 @@ import '@azure/core-asynciterator-polyfill'
 const ViewPlantScreen = (props) => {
   const userPlant = props.userPlant;
   const [updatedPlant, setUpdatedPlant] = useState({name: '', waterFrequency: ''});
+  const [formError, setFormError] = useState('');
   let times = userPlant.waterFrequency === 1 ? 'time' : 'times';
 
   const updatePlant = async () => {
+    if (updatedPlant.name === ''){
+     
+      setFormError(`Field 'name' cannot be blank.`);
+      return;
+    } else if (updatedPlant.waterFrequency === ''){
+      setFormError(`Field 'water' cannot be blank.`);
+      return;
+    }
+
     try{
       await DataStore.save(Plant.copyOf(userPlant, updated => {
         updated.name = updatedPlant.name;
@@ -19,7 +29,7 @@ const ViewPlantScreen = (props) => {
       props.setOverlayVisible(false);
       props.setNewPlant(!props.newPlant);
     } catch (error) {
-      console.log(error)
+      console.log('updatePlant', error)
     } 
   }
 
@@ -29,7 +39,7 @@ const ViewPlantScreen = (props) => {
       props.setOverlayVisible(false);
       props.setNewPlant(!props.newPlant);
     } catch (error){
-      console.log(error)
+      console.log('deletePlant', error);
     }
   }
 
@@ -37,8 +47,7 @@ const ViewPlantScreen = (props) => {
     return Alert.alert(
       `Delete ${userPlant.name}?`, 
       `Are you sure you want to delete your plant, ${userPlant.name}?`,
-    [
-      {
+    [{
         text: 'Yes',
         onPress: () => {
           deletePlant();
@@ -56,9 +65,10 @@ return (
       <Text style={styles.viewPlantWater}> Needs water {userPlant.waterFrequency} {times} per day.</Text>
 
       <View style={styles.updatePlantView} >
-        
+        <Text style={styles.formError}>{formError}</Text>
         <TextInput
           style={styles.input}
+          onFocus={() => setFormError('')}
           clearButtonMode='always'
           value={updatedPlant.name}
           onChangeText={newName => {
@@ -75,6 +85,7 @@ return (
           
         <TextInput
           style={styles.input}
+          onFocus={() => setFormError('')}
           clearButtonMode='always'
           value={updatedPlant.waterFrequency}
           onChangeText={newWaterFrequency => {
@@ -125,7 +136,13 @@ const styles = StyleSheet.create({
   },
   updatePlantView: {
     position: 'absolute',
+    alignItems: 'center',
     top: 380
+  },
+  formError: {
+    position: 'absolute',
+    marginTop: 20,
+    color: 'red'
   },
   updatePlantButton: {
     flex: 1,

@@ -10,30 +10,26 @@ import GetPlantsScreen from '../GetPlants/GetPlantsScreen';
 const UserHomeScreen = (props) => {
   const dateTime = moment().format('dddd, MMM. D, YYYY');
   const [optionsVisible, setOptionsVisible] = useState(false);
-  const [addPlantVisible, setaddPlantVisible] = useState(false);
+  const [addPlantVisible, setAddPlantVisible] = useState(false);
   const [newPlant, setNewPlant] = useState(false);
   const settingIcon = <Icon name="settings" size={25} color='#000' />
-  const closeIcon = <Icon name="close-circle" size={30} color='#000' />
+  const closeIcon = <Icon name="close-circle" size={20} color='#000' />
   const greeting = `Welcome, ${props.user.attributes.given_name}!`
 
   const signOut = () => {
     return Alert.alert(
       "Sign out", 
       "Are you sure you want to sign out?",
-    [
-      {
-        text: 'Yes',
-        onPress: () => {
+      [{text: 'Yes', onPress:() => {
           Auth.signOut();
           props.setUser(undefined)
-        }
-      }, 
-      {text: 'No'}
-    ])
+        }}, 
+      {text: 'No'}]
+    )
   }
 
   const closeForm = () => {
-    setaddPlantVisible(false)
+    setAddPlantVisible(!addPlantVisible)
     setNewPlant(!newPlant)
   }
 
@@ -45,26 +41,29 @@ const UserHomeScreen = (props) => {
       <View style={styles.listPlants}>
         <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} closeIcon={closeIcon}/> 
       </View>
+
       <Modal animationType="slide" transparent={true} visible={optionsVisible}>
-          <View style={styles.optionsView}></View>
-            <Text style={styles.signOutText} onPress={signOut}>Sign Out</Text>
-            <Pressable style={styles.closeOptions} onPress={() => {setOptionsVisible(false)}}>{closeIcon}</Pressable>
+        <View style={styles.optionsView}>
+          <Text style={styles.signOutText} onPress={signOut}>Sign Out</Text>
+          <Pressable style={styles.closeOptions} onPress={() => {setOptionsVisible(false)}}>{closeIcon}</Pressable>
+        </View>
       </Modal>
 
-      <Modal animationType="slide" transparent={true} visible={addPlantVisible}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-          <View style={styles.addPlantView}>
-            <View style={styles.addPlantForm}>
-              <AddPlantScreen closeForm={closeForm} user={props.user}/>
-              <Pressable style={styles.closeButton} onPress={() => {setaddPlantVisible(false)}}>{closeIcon}</Pressable>
+      
+        <Modal animationType="slide" transparent={true} visible={addPlantVisible}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.addPlantView}>
+              <View style={styles.addPlantForm}>
+                <AddPlantScreen closeForm={closeForm} user={props.user}/>
+                <Pressable style={styles.closeButton} onPress={() => {setAddPlantVisible(!addPlantVisible)}}>{closeIcon}</Pressable>
+              </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    
+          </TouchableWithoutFeedback>
+        </Modal>
+      
 
-      <Pressable style={styles.addPlantBackground} onPress={() => setaddPlantVisible(true)}> 
-       <Icon name="add" size={55} style={styles.addPlantIcon}/>
+      <Pressable style={styles.addPlantBackground} onPress={() => setAddPlantVisible(!addPlantVisible)}> 
+      <Icon name="add" size={55} style={styles.addPlantIcon}/>
       </Pressable>
       <StatusBar style="auto" />
     </View>
@@ -124,18 +123,16 @@ const styles = StyleSheet.create({
   },
   signOutText: {
     position: 'absolute',
+    textAlign: 'center',
     fontFamily: 'ChalkboardSE-Regular',
     textDecorationLine: 'underline',
     fontSize: 18,
     color: 'red',
-    top: 70,
-    right: 50,
-    padding: 5
+    width: 80,
+    marginTop: 30
   },
   closeOptions: {
     position: 'absolute',
-    top: 120,
-    right: 75
   },
   addPlantView: {
     flex: 1,
