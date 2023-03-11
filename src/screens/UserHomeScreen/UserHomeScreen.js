@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Modal, Pressable, Alert } from 'react-native';
+import { StyleSheet, Text, View, Modal, Pressable, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import moment from 'moment';
 import AddPlantScreen from '../AddPlant/AddPlantScreen';
 import { Auth } from 'aws-amplify';
@@ -52,13 +52,16 @@ const UserHomeScreen = (props) => {
       </Modal>
 
       <Modal animationType="slide" transparent={true} visible={addPlantVisible}>
-        <View style={styles.addPlantView}>
-          <View style={styles.addPlantForm}>
-            <AddPlantScreen closeForm={closeForm} user={props.user}/>
-            <Pressable style={styles.closeButton} onPress={() => {setaddPlantVisible(false)}}>{closeIcon}</Pressable>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+          <View style={styles.addPlantView}>
+            <View style={styles.addPlantForm}>
+              <AddPlantScreen closeForm={closeForm} user={props.user}/>
+              <Pressable style={styles.closeButton} onPress={() => {setaddPlantVisible(false)}}>{closeIcon}</Pressable>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
+    
 
       <Pressable style={styles.addPlantBackground} onPress={() => setaddPlantVisible(true)}> 
        <Icon name="add" size={55} style={styles.addPlantIcon}/>

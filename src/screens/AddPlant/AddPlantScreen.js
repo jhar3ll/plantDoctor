@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Pressable, TextInput} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, Pressable, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 import '@azure/core-asynciterator-polyfill'
+import { Keyboard } from 'react-native';
 
 const AddPlantScreen = (props) => {
   const [plantName, setPlantName] = useState(undefined)
@@ -26,32 +27,32 @@ const handleSubmit = async () => {
 }
 
 return (
-    <>
-      <View style={styles.addPlantView}>
-        <TextInput
-          style={styles.input}
-          clearButtonMode='while-editing'
-          onChangeText={setPlantName}
-          value={plantName}
-          placeholder="plant name"
-          placeholderTextColor={"#808080"}
-          />
+  <>
+    <View style={styles.addPlantView}>
+      <TextInput
+        style={styles.input}
+        clearButtonMode='while-editing'
+        onChangeText={setPlantName}
+        value={plantName}
+        placeholder="plant name"
+        placeholderTextColor={"#808080"}
+        />
 
-        <TextInput
-          style={styles.input}
-          clearButtonMode='while-editing'
-          onChangeText={setWaterFrequency}
-          value={waterFrequency}
-          placeholder="waterings per day"
-          keyboardType="numeric"
-          placeholderTextColor={"#808080"}
-          />
+      <TextInput
+        style={styles.input}
+        clearButtonMode='while-editing'
+        onChangeText={setWaterFrequency}
+        value={waterFrequency}
+        placeholder="waterings per day"
+        keyboardType="numeric"
+        placeholderTextColor={"#808080"}
+        />
 
-          <Pressable style={styles.addPlantButton} underlayColor='#fff' onPress={handleSubmit}>
-            <Text style={styles.addPlantButtonText}>Add Plant</Text>
-          </Pressable>
-      </View>
-    </>
+        <Pressable style={styles.addPlantButton} underlayColor='#fff' onPress={handleSubmit}>
+          <Text style={styles.addPlantButtonText}>Add Plant</Text>
+        </Pressable>
+    </View>
+  </>
   );
 };
 

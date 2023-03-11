@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Pressable, TextInput, Image, Alert} from 'react-native';
+import React, { useState } from 'react'; 
+import {StyleSheet, View, Text, Pressable, TextInput, Image, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 import '@azure/core-asynciterator-polyfill'
@@ -36,7 +36,7 @@ const ViewPlantScreen = (props) => {
   const confirmDelete = () => {
     return Alert.alert(
       `Delete ${userPlant.name}?`, 
-      `Are you sure you want to delete ${userPlant.name}?`,
+      `Are you sure you want to delete your plant, ${userPlant.name}?`,
     [
       {
         text: 'Yes',
@@ -49,52 +49,55 @@ const ViewPlantScreen = (props) => {
   }
 
 return (
-  <View style={styles.viewPlant}> 
-    <Image style={styles.viewPlantCactus} source={require('../../../assets/icons/cactus.png')} />
-    <Text style={styles.viewPlantName}>{userPlant.name}</Text>
-    <Text style={styles.viewPlantWater}> Needs water {userPlant.waterFrequency} {times} per day.</Text>
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <View style={styles.viewPlant}> 
+      <Image style={styles.viewPlantCactus} source={require('../../../assets/icons/cactus.png')} />
+      <Text style={styles.viewPlantName}>{userPlant.name}</Text>
+      <Text style={styles.viewPlantWater}> Needs water {userPlant.waterFrequency} {times} per day.</Text>
 
-    <View style={styles.updatePlantView} >
-      
-      <TextInput
-        style={styles.input}
-        clearButtonMode='always'
-        value={updatedPlant.name}
-        onChangeText={newName => {
-          setUpdatedPlant({
-            ...updatedPlant,
-            name: newName
-          });
-        }}
-        placeholder="plant name"
-        placeholderTextColor={"#808080"}
-        defaultValue={userPlant.name}
-        />
+      <View style={styles.updatePlantView} >
         
-      <TextInput
-        style={styles.input}
-        clearButtonMode='always'
-        value={updatedPlant.waterFrequency}
-        onChangeText={newWaterFrequency => {
-          setUpdatedPlant({
-            ...updatedPlant,
-            waterFrequency: newWaterFrequency
-          });
-        }}
-        placeholder="waterings per day"
-        placeholderTextColor={"#808080"}
-        keyboardType="numeric"
-        defaultValue={userPlant.waterFrequency.toString()}
-        />
-    </View>
+        <TextInput
+          style={styles.input}
+          clearButtonMode='always'
+          value={updatedPlant.name}
+          onChangeText={newName => {
+            setUpdatedPlant({
+              ...updatedPlant,
+              name: newName
+            });
+          }}
+          placeholder="plant name"
+          placeholderTextColor={"#808080"}
+          returnKeyType='done'
+          defaultValue={userPlant.name}
+          />
+          
+        <TextInput
+          style={styles.input}
+          clearButtonMode='always'
+          value={updatedPlant.waterFrequency}
+          onChangeText={newWaterFrequency => {
+            setUpdatedPlant({
+              ...updatedPlant,
+              waterFrequency: newWaterFrequency
+            });
+          }}
+          placeholder="waterings per day"
+          placeholderTextColor={"#808080"}
+          keyboardType="number-pad"
+          defaultValue={userPlant.waterFrequency.toString()}
+          />
+      </View>
 
-    <Pressable style={styles.updatePlantButton} underlayColor='#fff' onPress={updatePlant}>
-      <Text style={styles.updatePlantButtonText}>Update Plant</Text>
-    </Pressable>
-    <Pressable style={styles.deletePlantButton} underlayColor='#fff' onPress={confirmDelete}>
-      <Text style={styles.deletePlantButtonText}>Delete Plant</Text>
-    </Pressable>
-  </View>
+      <Pressable style={styles.updatePlantButton} underlayColor='#fff' onPress={updatePlant}>
+        <Text style={styles.updatePlantButtonText}>Update Plant</Text>
+      </Pressable>
+      <Pressable style={styles.deletePlantButton} underlayColor='#fff' onPress={confirmDelete}>
+        <Text style={styles.deletePlantButtonText}>Delete Plant</Text>
+      </Pressable>
+    </View>
+  </TouchableWithoutFeedback>
   );
 };
 
