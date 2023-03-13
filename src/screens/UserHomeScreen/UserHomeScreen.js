@@ -39,7 +39,7 @@ const UserHomeScreen = (props) => {
       <Text style={styles.dateText}>{dateTime}</Text>
       <Pressable style={styles.options} onPress={() => setOptionsVisible(true)}>{settingIcon}</Pressable>
       <View style={styles.listPlants}>
-        <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} closeIcon={closeIcon}/> 
+        <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} closeIcon={closeIcon} dateTime={dateTime}/> 
       </View>
 
       <Modal animationType="slide" transparent={true} visible={optionsVisible}>

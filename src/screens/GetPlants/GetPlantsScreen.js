@@ -3,7 +3,7 @@ import {StyleSheet, View, Text, Image, Pressable } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 import Icon  from 'react-native-vector-icons/Ionicons';
-import Checkmark from '../../components/Checkmark';
+import Checkmark from '../../components/Checkmark/Checkmark';
 import { Overlay } from '@rneui/themed';
 import ViewPlantScreen from '../ViewPlant/ViewPlantScreen';
 
@@ -12,6 +12,7 @@ const GetPlantsScreen = (props) => {
   const [userPlants, setUserPlants] = useState([]);
   const [userPlant, setUserPlant] = useState(undefined);
   const [overlayVisible, setOverlayVisible] = useState(false);
+  const [plantChecks, setPlantChecks] = useState([]);
  
   const getAllPlants = async () => {
     try {
@@ -29,16 +30,15 @@ const GetPlantsScreen = (props) => {
     setUserPlant(plant);
   }
 
-  const renderCheck = (waterFrequency) => {
+  const renderCheck = (waterFrequency, name) => {
     const checks = [];
+    let count = 1;
     for (let i=0; i<waterFrequency; i++){
-      checks.push(<Checkmark />)
+      const check = <Checkmark id={`${name}-${count}`} dateTime={props.dateTime}/>;
+      checks.push(check);
+      count++;
     }
     return checks;
-  }
-
-  const toggleOverlay = () => {
-    setOverlayVisible(!overlayVisible);
   }
 
   useEffect(() => {
@@ -60,7 +60,7 @@ return (
                 <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')} />
               </Pressable>
               <Text style={styles.plantText}>{plant.name}</Text>
-              <Icon style={styles.plantWatering}>{renderCheck(plant.waterFrequency)}</Icon>
+              <Icon style={styles.plantWatering}>{renderCheck(plant.waterFrequency, plant.name)}</Icon>
             </View>
           )
         })
