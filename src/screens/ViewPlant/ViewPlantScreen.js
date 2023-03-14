@@ -12,7 +12,6 @@ const ViewPlantScreen = (props) => {
 
   const updatePlant = async () => {
     if (updatedPlant.name === ''){
-     
       setFormError(`Field 'name' cannot be blank.`);
       return;
     } else if (updatedPlant.waterFrequency === ''){

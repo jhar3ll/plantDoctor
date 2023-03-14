@@ -12,12 +12,12 @@ const GetPlantsScreen = (props) => {
   const [userPlants, setUserPlants] = useState([]);
   const [userPlant, setUserPlant] = useState(undefined);
   const [overlayVisible, setOverlayVisible] = useState(false);
-  const [plantToUpdate, setPlantToUpdate] = useState(undefined);
-  const [indexToUpdate, setIndexToUpdate] = useState(0);
+  const [plantsToUpdate, setPlantsToUpdate] = useState([]);
+  const [updating, setUpdating] = useState(false);
  
   const getAllPlants = async () => {
     try {
-      let plants = (await DataStore.query(Plant, p => p.waterFrequency.gt(0))
+      const plants = (await DataStore.query(Plant, p => p.waterFrequency.gt(0))
       ).filter(p => p.owner === user)
       .sort((a,b) => a.name > b.name ? 1 : -1);
       setUserPlants(plants);
@@ -31,36 +31,39 @@ const GetPlantsScreen = (props) => {
     setUserPlant(plant);
   }
 
-  const getCheck = (plant, check) => {
-    const checkId = check.id;
-    for (let i = 0; i < plant.history.length; i++){
-      if (checkId === plant.history[i].id){
-       setIndexToUpdate(i);
-      }
-    }
-    setPlantToUpdate(plant);
-   console.log(plantToUpdate, indexToUpdate)
-  }
-
-  const updateCheck = () => {
-    //update userPlants array. Filter item out we want to update, then add it after updating
-  }
-
- 
-
   const renderCheck = (plant) => {
     const checks = [];
     for (let i=0; i<plant.history.length; i++){
-      const check = <Pressable onPress={() => {getCheck(plant, plant.history[i])}}><Checkmark id={plant.history[i].id} date={plant.history[i].date} checked={plant.history[i].checked}/></Pressable>
+      const check = <Checkmark id={plant.history[i].id} checked={plant.history[i].checked} getCheck={getCheck} plant={plant} />
       checks.push(check);
     }
     return checks;
   }
 
+  //if plant is already in array to update, delete previous, add new
+  const getCheck = (plant, checkId) => {
+    for (let i = 0; i < plant.history.length; i++){
+      if (checkId === plant.history[i].id){
+        setPlantsToUpdate(plantsToUpdate => [...plantsToUpdate, plant.history[i]]);
+        setUpdating(!updating);
+        break;
+      }
+    }
+  }
+
+  const updateChecks = () => {
+    console.log(plantsToUpdate)
+  }
+
+  useEffect(() => {
+    updateChecks();
+  
+  }, [updating])
+
   useEffect(() => {
     getAllPlants();
   }, [props.newPlant])
-
+  
 return (   
     <View style={styles.container}>
       <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
@@ -70,7 +73,6 @@ return (
 
       {
         userPlants.map((plant) => {
-          
           return(
             <View key={plant.id} style={styles.plant} >
               <Pressable onPress={() => [setOverlayVisible(!overlayVisible), getPlant(plant)]}>
