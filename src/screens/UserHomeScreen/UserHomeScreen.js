@@ -54,7 +54,7 @@ const UserHomeScreen = (props) => {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.addPlantView}>
               <View style={styles.addPlantForm}>
-                <AddPlantScreen closeForm={closeForm} user={props.user}/>
+                <AddPlantScreen closeForm={closeForm} user={props.user} dateTime={dateTime}/>
                 <Pressable style={styles.closeButton} onPress={() => {setAddPlantVisible(!addPlantVisible)}}>{closeIcon}</Pressable>
               </View>
             </View>

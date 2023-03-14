@@ -34,7 +34,9 @@ export const schema = {
                 "history": {
                     "name": "history",
                     "isArray": true,
-                    "type": "String",
+                    "type": {
+                        "nonModel": "Check"
+                    },
                     "isRequired": false,
                     "attributes": [],
                     "isArrayNullable": true
@@ -118,7 +120,34 @@ export const schema = {
         }
     },
     "enums": {},
-    "nonModels": {},
+    "nonModels": {
+        "Check": {
+            "name": "Check",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "date": {
+                    "name": "date",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "checked": {
+                    "name": "checked",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                }
+            }
+        }
+    },
     "codegenVersion": "3.3.5",
-    "version": "c668760882a5b4099535ea7b90560f6e"
+    "version": "d3854cef36b469953c47c84a1b1091a2"
 };

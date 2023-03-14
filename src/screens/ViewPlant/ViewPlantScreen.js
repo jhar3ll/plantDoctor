@@ -56,7 +56,7 @@ const ViewPlantScreen = (props) => {
       {text: 'No'}
     ])
   }
-
+  
 return (
   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.viewPlant}> 

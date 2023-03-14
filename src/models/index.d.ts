@@ -4,7 +4,21 @@ import { LazyLoading, LazyLoadingDisabled } from "@aws-amplify/datastore";
 
 
 
+type EagerCheck = {
+  readonly id?: string | null;
+  readonly date?: string | null;
+  readonly checked: boolean;
+}
 
+type LazyCheck = {
+  readonly id?: string | null;
+  readonly date?: string | null;
+  readonly checked: boolean;
+}
+
+export declare type Check = LazyLoading extends LazyLoadingDisabled ? EagerCheck : LazyCheck
+
+export declare const Check: (new (init: ModelInit<Check>) => Check)
 
 type EagerPlant = {
   readonly [__modelMeta__]: {
@@ -15,7 +29,7 @@ type EagerPlant = {
   readonly name: string;
   readonly waterFrequency: number;
   readonly owner: string;
-  readonly history?: (string | null)[] | null;
+  readonly history?: (Check | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -29,7 +43,7 @@ type LazyPlant = {
   readonly name: string;
   readonly waterFrequency: number;
   readonly owner: string;
-  readonly history?: (string | null)[] | null;
+  readonly history?: (Check | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

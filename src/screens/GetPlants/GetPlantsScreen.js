@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from 'react';
+import React, { useEffect,useState} from 'react';
 import {StyleSheet, View, Text, Image, Pressable } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
@@ -12,7 +12,8 @@ const GetPlantsScreen = (props) => {
   const [userPlants, setUserPlants] = useState([]);
   const [userPlant, setUserPlant] = useState(undefined);
   const [overlayVisible, setOverlayVisible] = useState(false);
-  const [plantChecks, setPlantChecks] = useState([]);
+  const [plantToUpdate, setPlantToUpdate] = useState(undefined);
+  const [indexToUpdate, setIndexToUpdate] = useState(0);
  
   const getAllPlants = async () => {
     try {
@@ -30,13 +31,28 @@ const GetPlantsScreen = (props) => {
     setUserPlant(plant);
   }
 
-  const renderCheck = (waterFrequency, name) => {
+  const getCheck = (plant, check) => {
+    const checkId = check.id;
+    for (let i = 0; i < plant.history.length; i++){
+      if (checkId === plant.history[i].id){
+       setIndexToUpdate(i);
+      }
+    }
+    setPlantToUpdate(plant);
+   console.log(plantToUpdate, indexToUpdate)
+  }
+
+  const updateCheck = () => {
+    //update userPlants array. Filter item out we want to update, then add it after updating
+  }
+
+ 
+
+  const renderCheck = (plant) => {
     const checks = [];
-    let count = 1;
-    for (let i=0; i<waterFrequency; i++){
-      const check = <Checkmark id={`${name}-${count}`} dateTime={props.dateTime}/>;
+    for (let i=0; i<plant.history.length; i++){
+      const check = <Pressable onPress={() => {getCheck(plant, plant.history[i])}}><Checkmark id={plant.history[i].id} date={plant.history[i].date} checked={plant.history[i].checked}/></Pressable>
       checks.push(check);
-      count++;
     }
     return checks;
   }
@@ -54,13 +70,14 @@ return (
 
       {
         userPlants.map((plant) => {
+          
           return(
             <View key={plant.id} style={styles.plant} >
               <Pressable onPress={() => [setOverlayVisible(!overlayVisible), getPlant(plant)]}>
                 <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')} />
               </Pressable>
               <Text style={styles.plantText}>{plant.name}</Text>
-              <Icon style={styles.plantWatering}>{renderCheck(plant.waterFrequency, plant.name)}</Icon>
+              <Icon style={styles.plantWatering}>{renderCheck(plant)}</Icon>
             </View>
           )
         })
