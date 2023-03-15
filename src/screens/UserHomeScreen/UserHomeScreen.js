@@ -28,6 +28,10 @@ const UserHomeScreen = (props) => {
     )
   }
 
+  const getDate = () => {
+    return moment().format('dddd, MMM. D, YYYY');
+  }
+
   const closeForm = () => {
     setAddPlantVisible(!addPlantVisible)
     setNewPlant(!newPlant)
@@ -36,10 +40,10 @@ const UserHomeScreen = (props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeUser}>{greeting}</Text>
-      <Text style={styles.dateText}>{dateTime}</Text>
+      <Text style={styles.dateText}>{getDate()}</Text>
       <Pressable style={styles.options} onPress={() => setOptionsVisible(true)}>{settingIcon}</Pressable>
       <View style={styles.listPlants}>
-        <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} closeIcon={closeIcon} dateTime={dateTime}/> 
+        <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} closeIcon={closeIcon} getDate={getDate}/> 
       </View>
 
       <Modal animationType="slide" transparent={true} visible={optionsVisible}>

@@ -13,7 +13,6 @@ const GetPlantsScreen = (props) => {
   const [userPlant, setUserPlant] = useState(undefined);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [plantsToUpdate, setPlantsToUpdate] = useState([]);
-  const [updating, setUpdating] = useState(false);
  
   const getAllPlants = async () => {
     try {
@@ -31,10 +30,17 @@ const GetPlantsScreen = (props) => {
     setUserPlant(plant);
   }
 
+  // if plant in plantsToUpdate, remove and update based on {checked}
+  // if !checked, increase plant watering count, else decrease
+  const updateWatering = (plant, checked) => {
+    const dateTime = props.getDate();
+    console.log(!checked)
+  }
+
   const renderCheck = (plant) => {
     const checks = [];
     for (let i=0; i<plant.waterFrequency; i++){
-      const check = <Checkmark plant={plant}/>
+      const check = <Checkmark plant={plant} updateWatering={updateWatering}/>
       checks.push(check);
     }
     return checks;
@@ -42,8 +48,8 @@ const GetPlantsScreen = (props) => {
 
   useEffect(() => {
     getAllPlants();
-  }, [props.newPlant])
-  
+  }, [])
+
 return (   
     <View style={styles.container}>
       <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
