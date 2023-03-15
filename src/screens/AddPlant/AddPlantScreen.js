@@ -1,30 +1,24 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Pressable, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
-import { Check, Plant } from '../../models'
+import { Plant } from '../../models'
+import moment from 'moment';
 import '@azure/core-asynciterator-polyfill'
 
 const AddPlantScreen = (props) => {
   const [plantName, setPlantName] = useState(undefined);
   const [waterFrequency, setWaterFrequency] = useState(undefined);
   const [formError, setFormError] = useState('');
-
+  
 const handleSubmit = async () => {  
-  let checks = [];
-  let count = 1;
-  for (let i = 0; i < Number(waterFrequency); i++){
-    let check = new Check({'id':`${plantName}-${count}`, 'date':props.dateTime, 'checked': false});
-    checks.push(check);
-    count++;
-  }
- 
+  const dateTime = moment().format('dddd, MMM. D, YYYY');
   try {
     await DataStore.save(
       new Plant({
       "name": plantName,
       "waterFrequency": Number(waterFrequency),
       "owner": String(props.user.username),
-      "history": checks
+      "waterings": [{'wateringDate': dateTime, 'wateringCount': 0}]
     })
   );
     props.closeForm();

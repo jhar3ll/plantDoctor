@@ -33,32 +33,12 @@ const GetPlantsScreen = (props) => {
 
   const renderCheck = (plant) => {
     const checks = [];
-    for (let i=0; i<plant.history.length; i++){
-      const check = <Checkmark id={plant.history[i].id} checked={plant.history[i].checked} getCheck={getCheck} plant={plant} />
+    for (let i=0; i<plant.waterFrequency; i++){
+      const check = <Checkmark plant={plant}/>
       checks.push(check);
     }
     return checks;
   }
-
-  //if plant is already in array to update, delete previous, add new
-  const getCheck = (plant, checkId) => {
-    for (let i = 0; i < plant.history.length; i++){
-      if (checkId === plant.history[i].id){
-        setPlantsToUpdate(plantsToUpdate => [...plantsToUpdate, plant.history[i]]);
-        setUpdating(!updating);
-        break;
-      }
-    }
-  }
-
-  const updateChecks = () => {
-    console.log(plantsToUpdate)
-  }
-
-  useEffect(() => {
-    updateChecks();
-  
-  }, [updating])
 
   useEffect(() => {
     getAllPlants();
