@@ -5,13 +5,13 @@ import { LazyLoading, LazyLoadingDisabled } from "@aws-amplify/datastore";
 
 
 type EagerWaterings = {
-  readonly wateringDate?: string | null;
   readonly wateringCount?: number | null;
+  readonly wateringDate?: string | null;
 }
 
 type LazyWaterings = {
-  readonly wateringDate?: string | null;
   readonly wateringCount?: number | null;
+  readonly wateringDate?: string | null;
 }
 
 export declare type Waterings = LazyLoading extends LazyLoadingDisabled ? EagerWaterings : LazyWaterings

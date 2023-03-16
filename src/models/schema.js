@@ -124,17 +124,17 @@ export const schema = {
         "Waterings": {
             "name": "Waterings",
             "fields": {
-                "wateringDate": {
-                    "name": "wateringDate",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "wateringCount": {
                     "name": "wateringCount",
                     "isArray": false,
                     "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "wateringDate": {
+                    "name": "wateringDate",
+                    "isArray": false,
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 }

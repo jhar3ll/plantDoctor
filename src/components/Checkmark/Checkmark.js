@@ -6,15 +6,15 @@ const Checkmark = (props) => {
     const [checked, setChecked] = useState(false);
 
     const updateCheck = (plant) => {
-        setChecked(!checked);
-        props.updateWatering(plant, checked)
+        setChecked(true);
+        props.updateWatering(plant)
     }
 
     return (
         <View style={styles.container}>
             {
                 checked ? 
-                <Icon name="checkmark-circle" color={'green'}  size={40} onPress={() => {updateCheck(props.plant)}}/>
+                <Icon name="checkmark-circle" color={'green'}  size={40} />
                 :
                 <Icon name="checkmark-circle-outline"  size={40} onPress={() => {updateCheck(props.plant)}}/> 
             }     

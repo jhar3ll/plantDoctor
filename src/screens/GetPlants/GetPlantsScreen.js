@@ -1,7 +1,7 @@
 import React, { useEffect,useState} from 'react';
 import {StyleSheet, View, Text, Image, Pressable } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
-import { Plant } from '../../models'
+import { Waterings, Plant } from '../../models'
 import Icon  from 'react-native-vector-icons/Ionicons';
 import Checkmark from '../../components/Checkmark/Checkmark';
 import { Overlay } from '@rneui/themed';
@@ -12,8 +12,8 @@ const GetPlantsScreen = (props) => {
   const [userPlants, setUserPlants] = useState([]);
   const [userPlant, setUserPlant] = useState(undefined);
   const [overlayVisible, setOverlayVisible] = useState(false);
-  const [plantsToUpdate, setPlantsToUpdate] = useState([]);
- 
+  const [updatedWaterings, setUpdatedWaterings] = useState([]);
+
   const getAllPlants = async () => {
     try {
       const plants = (await DataStore.query(Plant, p => p.waterFrequency.gt(0))
@@ -30,12 +30,46 @@ const GetPlantsScreen = (props) => {
     setUserPlant(plant);
   }
 
-  // if plant in plantsToUpdate, remove and update based on {checked}
-  // if !checked, increase plant watering count, else decrease
-  const updateWatering = (plant, checked) => {
-    const dateTime = props.getDate();
-    console.log(!checked)
+  const updatePlant = async (plant) => {
+    console.log(updatedWaterings)
+      try{
+        await DataStore.save(Plant.copyOf(plant, updated => {
+          updated.name = plant.name;
+          updated.waterFrequency = Number(plant.waterFrequency);
+          updated.waterings = updatedWaterings;
+          })
+        );
+        console.log('updatePlant', 'success')
+    } catch (error) {
+      console.log('updatePlant', error)
+    } 
   }
+
+  // change model to use array of strings. use JSON.parse() to handle updates
+  const updateWatering = (plant) => {
+    const today = props.getDate();
+    let waterings = [];
+
+    if (plant.waterings.length===0){
+    setUpdatedWaterings(new Waterings({wateringDate:today, wateringCount:1}));
+    updatePlant(plant);
+    return;
+    }
+
+    for (let i = 0; i < plant.waterings.length; i++) {
+      if (plant.waterings[i].wateringDate===today){
+        let watering = new Waterings({wateringDate:today, wateringCount:plant.waterings[i].wateringCount += 1});
+        waterings = plant.waterings.filter(x => x != plant.waterings[i]);
+        waterings.push(watering);
+      } 
+      else {
+        waterings.push(plant.waterings[i])
+      }
+    }
+    setUpdatedWaterings(waterings);
+    updatePlant(plant);
+  }
+  
 
   const renderCheck = (plant) => {
     const checks = [];
@@ -49,7 +83,7 @@ const GetPlantsScreen = (props) => {
   useEffect(() => {
     getAllPlants();
   }, [])
-
+ 
 return (   
     <View style={styles.container}>
       <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
