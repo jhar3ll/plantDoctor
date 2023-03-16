@@ -12,7 +12,6 @@ const GetPlantsScreen = (props) => {
   const [userPlants, setUserPlants] = useState([]);
   const [userPlant, setUserPlant] = useState(undefined);
   const [overlayVisible, setOverlayVisible] = useState(false);
-  const [updatedWaterings, setUpdatedWaterings] = useState([]);
 
   const getAllPlants = async () => {
     try {
@@ -30,44 +29,36 @@ const GetPlantsScreen = (props) => {
     setUserPlant(plant);
   }
 
-  const updatePlant = async (plant) => {
-    console.log(updatedWaterings)
+  const updatePlant = async (plant, waterings) => {
+      
       try{
         await DataStore.save(Plant.copyOf(plant, updated => {
           updated.name = plant.name;
           updated.waterFrequency = Number(plant.waterFrequency);
-          updated.waterings = updatedWaterings;
+          updated.waterings = waterings;
           })
         );
         console.log('updatePlant', 'success')
+        getAllPlants();
     } catch (error) {
       console.log('updatePlant', error)
     } 
   }
 
-  // change model to use array of strings. use JSON.parse() to handle updates
   const updateWatering = (plant) => {
     const today = props.getDate();
     let waterings = [];
-
-    if (plant.waterings.length===0){
-    setUpdatedWaterings(new Waterings({wateringDate:today, wateringCount:1}));
-    updatePlant(plant);
-    return;
-    }
-
-    for (let i = 0; i < plant.waterings.length; i++) {
-      if (plant.waterings[i].wateringDate===today){
-        let watering = new Waterings({wateringDate:today, wateringCount:plant.waterings[i].wateringCount += 1});
-        waterings = plant.waterings.filter(x => x != plant.waterings[i]);
-        waterings.push(watering);
-      } 
-      else {
-        waterings.push(plant.waterings[i])
+    
+    for (let i = 0; i < plant.waterings.length; i++){
+      let watering = JSON.parse(plant.waterings[i]);
+      if (watering.wateringDate === today){
+        let result = `{"wateringDate": "${today}", "wateringCount": "${watering.wateringCount = Number(watering.wateringCount) + 1}"}`
+        waterings.push(result);
+      } else {
+        waterings.push(`{"wateringDate": "${watering.wateringDate}", "wateringCount": "${Number(watering.wateringCount)}"}`);
       }
     }
-    setUpdatedWaterings(waterings);
-    updatePlant(plant);
+    updatePlant(plant, waterings);
   }
   
 

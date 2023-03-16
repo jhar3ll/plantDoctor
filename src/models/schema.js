@@ -34,9 +34,7 @@ export const schema = {
                 "waterings": {
                     "name": "waterings",
                     "isArray": true,
-                    "type": {
-                        "nonModel": "Waterings"
-                    },
+                    "type": "String",
                     "isRequired": false,
                     "attributes": [],
                     "isArrayNullable": true
@@ -120,27 +118,7 @@ export const schema = {
         }
     },
     "enums": {},
-    "nonModels": {
-        "Waterings": {
-            "name": "Waterings",
-            "fields": {
-                "wateringCount": {
-                    "name": "wateringCount",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "wateringDate": {
-                    "name": "wateringDate",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                }
-            }
-        }
-    },
+    "nonModels": {},
     "codegenVersion": "3.3.5",
-    "version": "d032ce5bc35f29875345ca110d382a1c"
+    "version": "83645865f4e67f7ef4667ad1a6fa9646"
 };
