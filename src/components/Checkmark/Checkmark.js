@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Icon  from 'react-native-vector-icons/Ionicons';
 
 const Checkmark = (props) => {
-    const [checked, setChecked] = useState(false);
-
+    const [checked, setChecked] = useState(props.checked);
+    
     const updateCheck = (plant) => {
-        setChecked(true);
-        props.updateWatering(plant)
+        setChecked(!checked);
+        props.updatePlantCount(plant)
     }
 
     return (

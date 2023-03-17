@@ -1,17 +1,19 @@
 import React, { useEffect,useState} from 'react';
 import {StyleSheet, View, Text, Image, Pressable } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
-import { Waterings, Plant } from '../../models'
+import { Plant } from '../../models'
 import Icon  from 'react-native-vector-icons/Ionicons';
 import Checkmark from '../../components/Checkmark/Checkmark';
 import { Overlay } from '@rneui/themed';
 import ViewPlantScreen from '../ViewPlant/ViewPlantScreen';
+import AddPlantScreen from '../AddPlant/AddPlantScreen';
 
 const GetPlantsScreen = (props) => {
   const user = props.user.username;
   const [userPlants, setUserPlants] = useState([]);
   const [userPlant, setUserPlant] = useState(undefined);
   const [overlayVisible, setOverlayVisible] = useState(false);
+  const [reload, setReload] = useState(false);
 
   const getAllPlants = async () => {
     try {
@@ -19,7 +21,6 @@ const GetPlantsScreen = (props) => {
       ).filter(p => p.owner === user)
       .sort((a,b) => a.name > b.name ? 1 : -1);
       setUserPlants(plants);
-      props.setNewPlant(!props.newPlant);
     } catch (error){
       console.log('getAllPlants', error)
     }
@@ -29,56 +30,48 @@ const GetPlantsScreen = (props) => {
     setUserPlant(plant);
   }
 
-  const updatePlant = async (plant, waterings) => {
-      
-      try{
-        await DataStore.save(Plant.copyOf(plant, updated => {
-          updated.name = plant.name;
-          updated.waterFrequency = Number(plant.waterFrequency);
-          updated.waterings = waterings;
-          })
-        );
-        console.log('updatePlant', 'success')
-        getAllPlants();
+  const updatePlantCount = async (plant) => {
+    try{
+      await DataStore.save(Plant.copyOf(plant, updated => {
+        updated.name = plant.name;
+        updated.waterFrequency = Number(plant.waterFrequency);
+        updated.waterDate = props.today;
+        updated.waterCount = (plant.waterCount + 1);
+        })
+      );
+      setReload(!reload);
+      console.log('updatePlant', 'success')
     } catch (error) {
       console.log('updatePlant', error)
     } 
   }
 
-  const updateWatering = (plant) => {
-    const today = props.getDate();
-    let waterings = [];
-    
-    for (let i = 0; i < plant.waterings.length; i++){
-      let watering = JSON.parse(plant.waterings[i]);
-      if (watering.wateringDate === today){
-        let result = `{"wateringDate": "${today}", "wateringCount": "${watering.wateringCount = Number(watering.wateringCount) + 1}"}`
-        waterings.push(result);
-      } else {
-        waterings.push(`{"wateringDate": "${watering.wateringDate}", "wateringCount": "${Number(watering.wateringCount)}"}`);
-      }
-    }
-    updatePlant(plant, waterings);
-  }
-  
-
-  const renderCheck = (plant) => {
+  const renderChecks = (plant) => {
     const checks = [];
-    for (let i=0; i<plant.waterFrequency; i++){
-      const check = <Checkmark plant={plant} updateWatering={updateWatering}/>
+    for (let i=0; i<(plant.waterFrequency - plant.waterCount); i++){
+      const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={false}/>
+      checks.push(check);
+    }
+
+    for (let i=0; i<plant.waterCount; i++){
+      const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={true}/>
       checks.push(check);
     }
     return checks;
   }
 
+  const reloadAfterAdd = () => {
+    <AddPlantScreen reload={reload} setReload={setReload} />
+  }
+
   useEffect(() => {
     getAllPlants();
-  }, [])
- 
+  }, [reload])
+
 return (   
     <View style={styles.container}>
       <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
-        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} newPlant={props.newPlant} setNewPlant={props.setNewPlant}/>
+        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} reload={reload} setReload={setReload}/>
         <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
       </Overlay>
 
@@ -90,7 +83,7 @@ return (
                 <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')} />
               </Pressable>
               <Text style={styles.plantText}>{plant.name}</Text>
-              <Icon style={styles.plantWatering}>{renderCheck(plant)}</Icon>
+              <Icon style={styles.plantWatering}>{renderChecks(plant)}</Icon>
             </View>
           )
         })

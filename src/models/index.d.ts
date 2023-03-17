@@ -15,7 +15,8 @@ type EagerPlant = {
   readonly name: string;
   readonly waterFrequency: number;
   readonly owner: string;
-  readonly waterings?: (string | null)[] | null;
+  readonly waterDate: string;
+  readonly waterCount: number;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -29,7 +30,8 @@ type LazyPlant = {
   readonly name: string;
   readonly waterFrequency: number;
   readonly owner: string;
-  readonly waterings?: (string | null)[] | null;
+  readonly waterDate: string;
+  readonly waterCount: number;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

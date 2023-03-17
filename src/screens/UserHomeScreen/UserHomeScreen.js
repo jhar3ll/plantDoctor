@@ -8,10 +8,9 @@ import Icon  from 'react-native-vector-icons/Ionicons';
 import GetPlantsScreen from '../GetPlants/GetPlantsScreen';
 
 const UserHomeScreen = (props) => {
-  const dateTime = moment().format('dddd, MMM. D, YYYY');
+  const today = moment().format('dddd, MMM. D, YYYY');
   const [optionsVisible, setOptionsVisible] = useState(false);
   const [addPlantVisible, setAddPlantVisible] = useState(false);
-  const [newPlant, setNewPlant] = useState(false);
   const settingIcon = <Icon name="settings" size={25} color='#000' />
   const closeIcon = <Icon name="close-circle" size={20} color='#000' />
   const greeting = `Welcome, ${props.user.attributes.given_name}!`
@@ -28,22 +27,17 @@ const UserHomeScreen = (props) => {
     )
   }
 
-  const getDate = () => {
-    return moment().format('dddd, MMM. D, YYYY');
-  }
-
   const closeForm = () => {
-    setAddPlantVisible(!addPlantVisible)
-    setNewPlant(!newPlant)
+    setAddPlantVisible(!addPlantVisible);
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeUser}>{greeting}</Text>
-      <Text style={styles.dateText}>{getDate()}</Text>
+      <Text style={styles.dateText}>{today}</Text>
       <Pressable style={styles.options} onPress={() => setOptionsVisible(true)}>{settingIcon}</Pressable>
       <View style={styles.listPlants}>
-        <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} closeIcon={closeIcon} getDate={getDate}/> 
+        <GetPlantsScreen user={props.user} closeIcon={closeIcon} today={today}/> 
       </View>
 
       <Modal animationType="slide" transparent={true} visible={optionsVisible}>
@@ -58,7 +52,7 @@ const UserHomeScreen = (props) => {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.addPlantView}>
               <View style={styles.addPlantForm}>
-                <AddPlantScreen closeForm={closeForm} user={props.user} dateTime={dateTime}/>
+                <AddPlantScreen closeForm={closeForm} user={props.user} />
                 <Pressable style={styles.closeButton} onPress={() => {setAddPlantVisible(!addPlantVisible)}}>{closeIcon}</Pressable>
               </View>
             </View>

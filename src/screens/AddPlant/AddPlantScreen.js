@@ -11,17 +11,19 @@ const AddPlantScreen = (props) => {
   const [formError, setFormError] = useState('');
   
 const handleSubmit = async () => {  
-  const dateTime = moment().format('dddd, MMM. D, YYYY');
+  const today = moment().format('dddd, MMM. D, YYYY');
   try {
     await DataStore.save(
       new Plant({
       "name": plantName,
       "waterFrequency": Number(waterFrequency),
       "owner": String(props.user.username),
-      "waterings": [`{"wateringDate": "${dateTime}", "wateringCount": ${0}`]
+      "waterDate": today,
+      "waterCount": 0
     })
   );
     props.closeForm();
+    props.setReload(!props.reload);
     console.log("success!");
   } catch (error) {
     console.log(error);

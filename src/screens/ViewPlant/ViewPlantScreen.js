@@ -23,10 +23,13 @@ const ViewPlantScreen = (props) => {
       await DataStore.save(Plant.copyOf(userPlant, updated => {
         updated.name = updatedPlant.name;
         updated.waterFrequency = Number(updatedPlant.waterFrequency);
+        updated.waterDate = userPlant.waterDate;
+        updated.waterCount = userPlant.waterCount;
         })
       );
+      props.setReload(!props.reload);
       props.setOverlayVisible(false);
-      props.setNewPlant(!props.newPlant);
+      console.log('updatePlant', 'success')
     } catch (error) {
       console.log('updatePlant', error)
     } 
@@ -36,7 +39,7 @@ const ViewPlantScreen = (props) => {
     try {
       await DataStore.delete(userPlant);
       props.setOverlayVisible(false);
-      props.setNewPlant(!props.newPlant);
+      props.setReload(!props.reload);
     } catch (error){
       console.log('deletePlant', error);
     }
@@ -76,7 +79,7 @@ return (
               name: newName
             });
           }}
-          placeholder="plant name"
+          placeholder="new plant name"
           placeholderTextColor={"#808080"}
           returnKeyType='done'
           defaultValue={userPlant.name}
@@ -93,7 +96,7 @@ return (
               waterFrequency: newWaterFrequency
             });
           }}
-          placeholder="waterings per day"
+          placeholder="new waterings per day"
           placeholderTextColor={"#808080"}
           keyboardType="number-pad"
           defaultValue={userPlant.waterFrequency.toString()}

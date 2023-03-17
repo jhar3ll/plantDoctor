@@ -3,6 +3,7 @@ type Plant @model @auth(rules: [{allow: owner}, {allow: groups, groups: ["us-eas
   name: String!
   waterFrequency: Int!
   owner: String!
-  waterings: [String]
+  waterDate: String!
+  waterCount: Int!
 }
  
