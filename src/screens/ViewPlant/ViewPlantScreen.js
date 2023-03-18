@@ -23,11 +23,8 @@ const ViewPlantScreen = (props) => {
       await DataStore.save(Plant.copyOf(userPlant, updated => {
         updated.name = updatedPlant.name;
         updated.waterFrequency = Number(updatedPlant.waterFrequency);
-        updated.waterDate = userPlant.waterDate;
-        updated.waterCount = userPlant.waterCount;
         })
       );
-      props.setReload(!props.reload);
       props.setOverlayVisible(false);
       console.log('updatePlant', 'success')
     } catch (error) {

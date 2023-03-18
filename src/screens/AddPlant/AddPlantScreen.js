@@ -23,7 +23,6 @@ const handleSubmit = async () => {
     })
   );
     props.closeForm();
-    props.setReload(!props.reload);
     console.log("success!");
   } catch (error) {
     console.log(error);
