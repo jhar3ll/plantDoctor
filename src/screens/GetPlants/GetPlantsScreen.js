@@ -1,5 +1,5 @@
 import React, { useEffect,useState} from 'react';
-import {StyleSheet, View, Text, Image, Pressable } from 'react-native';
+import {StyleSheet, View, Text, Image, Pressable, ActivityIndicator } from 'react-native';
 import { DataStore, SortDirection } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 import Icon  from 'react-native-vector-icons/Ionicons';
@@ -9,42 +9,44 @@ import ViewPlantScreen from '../ViewPlant/ViewPlantScreen';
 
 const GetPlantsScreen = (props) => {
   const user = props.user.username;
-  const [userPlants, setUserPlants] = useState([]);
   const [userPlant, setUserPlant] = useState(undefined);
+  const [userPlants, setUserPlants] = useState([]);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [synced, setSynced] = useState(false);
-
-  const getAllPlants = async () => {
-    try {
-      const subscription =  DataStore.observeQuery(
-        Plant, 
-        p => p.and(p => [p.owner.eq(user)]), {
+  
+  useEffect(() => {
+    const subscription =  DataStore.observeQuery(
+      Plant, 
+      p => p.and(p => [p.owner.eq(user)]), {
       sort: s => s.name(SortDirection.ASCENDING)
-    }).subscribe(snapshot => {
+      }).subscribe(snapshot => {
       const { items, isSynced } = snapshot;
       if (!isSynced) {
-        setSynced(false);
+        setUserPlants([]);
       } else {
-        setSynced(true);
+        console.log(snapshot)
         setUserPlants(items);
+        setSynced(isSynced);
       }
-      console.log(isSynced)
     })
-    } catch (error){
-      console.log('getAllPlants', error)
+      
+      return () => {
+        subscription.unsubscribe();
     }
-  }
+  }, [])
 
   const getPlant = (plant) => {
     setUserPlant(plant);
   }
-
+  /* move update and delete to HERE */
   const updatePlantCount = async (plant) => {
     try{
       await DataStore.save(Plant.copyOf(plant, updated => {
         updated.waterCount = (plant.waterCount + 1);
         })
       );
+      setSynced(false);
+      setUserPlants([]);
       console.log('updatePlant', 'success')
     } catch (error) {
       console.log('updatePlant', error)
@@ -52,31 +54,33 @@ const GetPlantsScreen = (props) => {
   }
 
   const renderChecks = (plant) => {
-    const checks = [];
-    for (let i=0; i<(plant.waterFrequency - plant.waterCount); i++){
-      const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={false}/>
-      checks.push(check);
+    if (synced) {
+      const checks = [];
+        for (let i=0; i<(plant.waterFrequency - plant.waterCount); i++){
+          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={false}/>
+          checks.push(check);
+        }
+
+        for (let i=0; i<plant.waterCount; i++){
+          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={true}/>
+          checks.push(check);
+        }
+        return checks;
+      }
     }
 
-    for (let i=0; i<plant.waterCount; i++){
-      const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={true}/>
-      checks.push(check);
-    }
-    return checks;
-  }
-
-  useEffect(() => {
-    getAllPlants();
-  }, [])
-
+  if (!synced){ return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <ActivityIndicator />
+    </View>)}
 
 return (   
     <View style={styles.container}>
       <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
-        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} />
+        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} setUserPlants={setUserPlants}/>
         <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
       </Overlay>
-        
+
       {userPlants.map((plant, index) => {
         return(
           <View key={index} style={styles.plant} >
@@ -87,7 +91,7 @@ return (
             <Icon style={styles.plantWatering}>{renderChecks(plant)}</Icon>
           </View>
           )
-        })
+        }) 
       }
     </View>
   );

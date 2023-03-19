@@ -6,7 +6,7 @@ import '@azure/core-asynciterator-polyfill'
 
 const ViewPlantScreen = (props) => {
   const userPlant = props.userPlant;
-  const [updatedPlant, setUpdatedPlant] = useState({name: '', waterFrequency: ''});
+  const [updatedPlant, setUpdatedPlant] = useState({name: userPlant.name, waterFrequency: userPlant.waterFrequency.toString()});
   const [formError, setFormError] = useState('');
   let times = userPlant.waterFrequency === 1 ? 'time' : 'times';
 
@@ -17,15 +17,18 @@ const ViewPlantScreen = (props) => {
     } else if (updatedPlant.waterFrequency === ''){
       setFormError(`Field 'water' cannot be blank.`);
       return;
-    }
+    } 
 
     try{
+      DataStore.start();
       await DataStore.save(Plant.copyOf(userPlant, updated => {
         updated.name = updatedPlant.name;
         updated.waterFrequency = Number(updatedPlant.waterFrequency);
+        updated.waterCount = 0;
         })
       );
       props.setOverlayVisible(false);
+      props.setUserPlants([]);
       console.log('updatePlant', 'success')
     } catch (error) {
       console.log('updatePlant', error)
@@ -36,7 +39,6 @@ const ViewPlantScreen = (props) => {
     try {
       await DataStore.delete(userPlant);
       props.setOverlayVisible(false);
-      props.setReload(!props.reload);
     } catch (error){
       console.log('deletePlant', error);
     }
@@ -69,7 +71,7 @@ return (
           style={styles.input}
           onFocus={() => setFormError('')}
           clearButtonMode='always'
-          value={updatedPlant.name}
+          defaultValue={userPlant.name}
           onChangeText={newName => {
             setUpdatedPlant({
               ...updatedPlant,
@@ -79,14 +81,14 @@ return (
           placeholder="new plant name"
           placeholderTextColor={"#808080"}
           returnKeyType='done'
-          defaultValue={userPlant.name}
+          
           />
           
         <TextInput
           style={styles.input}
           onFocus={() => setFormError('')}
           clearButtonMode='always'
-          value={updatedPlant.waterFrequency}
+          defaultValue={userPlant.waterFrequency.toString()}
           onChangeText={newWaterFrequency => {
             setUpdatedPlant({
               ...updatedPlant,
@@ -96,7 +98,7 @@ return (
           placeholder="new waterings per day"
           placeholderTextColor={"#808080"}
           keyboardType="number-pad"
-          defaultValue={userPlant.waterFrequency.toString()}
+          value={updatedPlant.waterFrequency}
           />
       </View>
 
