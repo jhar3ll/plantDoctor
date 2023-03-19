@@ -28,6 +28,7 @@ const ViewPlantScreen = (props) => {
         })
       );
       props.setOverlayVisible(false);
+      props.setSynced(false);
       props.setUserPlants([]);
       console.log('updatePlant', 'success')
     } catch (error) {
@@ -71,7 +72,7 @@ return (
           style={styles.input}
           onFocus={() => setFormError('')}
           clearButtonMode='always'
-          defaultValue={userPlant.name}
+          defaultValue={updatedPlant.name}
           onChangeText={newName => {
             setUpdatedPlant({
               ...updatedPlant,
@@ -88,7 +89,7 @@ return (
           style={styles.input}
           onFocus={() => setFormError('')}
           clearButtonMode='always'
-          defaultValue={userPlant.waterFrequency.toString()}
+          defaultValue={updatedPlant.waterFrequency}
           onChangeText={newWaterFrequency => {
             setUpdatedPlant({
               ...updatedPlant,
@@ -98,7 +99,6 @@ return (
           placeholder="new waterings per day"
           placeholderTextColor={"#808080"}
           keyboardType="number-pad"
-          value={updatedPlant.waterFrequency}
           />
       </View>
 
