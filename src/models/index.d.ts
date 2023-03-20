@@ -4,7 +4,19 @@ import { LazyLoading, LazyLoadingDisabled } from "@aws-amplify/datastore";
 
 
 
+type EagerWatering = {
+  readonly waterDate?: string | null;
+  readonly waterCount?: number | null;
+}
 
+type LazyWatering = {
+  readonly waterDate?: string | null;
+  readonly waterCount?: number | null;
+}
+
+export declare type Watering = LazyLoading extends LazyLoadingDisabled ? EagerWatering : LazyWatering
+
+export declare const Watering: (new (init: ModelInit<Watering>) => Watering)
 
 type EagerPlant = {
   readonly [__modelMeta__]: {
@@ -15,7 +27,7 @@ type EagerPlant = {
   readonly name: string;
   readonly waterFrequency: number;
   readonly owner: string;
-  readonly history?: (string | null)[] | null;
+  readonly waterings?: (Watering | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -29,7 +41,7 @@ type LazyPlant = {
   readonly name: string;
   readonly waterFrequency: number;
   readonly owner: string;
-  readonly history?: (string | null)[] | null;
+  readonly waterings?: (Watering | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

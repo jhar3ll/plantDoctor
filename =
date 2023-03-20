@@ -1,0 +1,42 @@
+
+> fsevents@1.2.13 install /Users/legit/Development/plantDoctor/node_modules/chokidar/node_modules/fsevents
+> node install.js
+
+
+> core-js@2.6.12 postinstall /Users/legit/Development/plantDoctor/node_modules/core-js
+> node -e "try{require('./postinstall')}catch(e){}"
+
+[96mThank you for using core-js ([94m https://github.com/zloirock/core-js [96m) for polyfilling JavaScript standard library![0m
+
+[96mThe project needs your help! Please consider supporting of core-js on Open Collective or Patreon: [0m
+[96m>[94m https://opencollective.com/core-js [0m
+[96m>[94m https://www.patreon.com/zloirock [0m
+
+[96mAlso, the author of core-js ([94m https://github.com/zloirock [96m) is looking for a good job -)[0m
+
+
+> cucumber-expressions@3.0.0 postinstall /Users/legit/Development/plantDoctor/node_modules/cucumber-expressions
+> node scripts/postinstall.js
+
+
+> es5-ext@0.10.62 postinstall /Users/legit/Development/plantDoctor/node_modules/es5-ext
+>  node -e "try{require('./_postinstall')}catch(e){}" || exit 0
+
+
+> atlas@1.0.0-alpha.0 postinstall /Users/legit/Development/plantDoctor/node_modules/atlas
+> npm run bootstrap
+
+
+> atlas@1.0.0-alpha.0 bootstrap /Users/legit/Development/plantDoctor/node_modules/atlas
+> echo "all good!"
+
+all good!
++ react-native-screens@3.20.0
++ 3.0.0@3.0.0
+added 1296 packages from 809 contributors and audited 3148 packages in 114.122s
+
+85 packages are looking for funding
+  run `npm fund` for details
+
+found 250 vulnerabilities (44 low, 68 moderate, 108 high, 30 critical)
+  run `npm audit fix` to fix them, or `npm audit` for details

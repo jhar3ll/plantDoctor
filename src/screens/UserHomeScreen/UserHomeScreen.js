@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Modal, Pressable, Alert } from 'react-native';
+import { StyleSheet, Text, View, Modal, Pressable, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import moment from 'moment';
 import AddPlantScreen from '../AddPlant/AddPlantScreen';
 import { Auth } from 'aws-amplify';
@@ -8,60 +8,60 @@ import Icon  from 'react-native-vector-icons/Ionicons';
 import GetPlantsScreen from '../GetPlants/GetPlantsScreen';
 
 const UserHomeScreen = (props) => {
-  const dateTime = moment().format('dddd, MMM. D, YYYY');
+  const today = moment().format('dddd, MMM. D, YYYY');
   const [optionsVisible, setOptionsVisible] = useState(false);
-  const [addPlantVisible, setaddPlantVisible] = useState(false);
-  const [newPlant, setNewPlant] = useState(false);
+  const [addPlantVisible, setAddPlantVisible] = useState(false);
   const settingIcon = <Icon name="settings" size={25} color='#000' />
-  const closeIcon = <Icon name="close-circle" size={30} color='#000' />
+  const closeIcon = <Icon name="close-circle" size={20} color='#000' />
   const greeting = `Welcome, ${props.user.attributes.given_name}!`
 
   const signOut = () => {
     return Alert.alert(
       "Sign out", 
       "Are you sure you want to sign out?",
-    [
-      {
-        text: 'Yes',
-        onPress: () => {
+      [{text: 'Yes', onPress:() => {
           Auth.signOut();
           props.setUser(undefined)
-        }
-      }, 
-      {text: 'No'}
-    ])
+        }}, 
+      {text: 'No'}]
+    )
   }
 
   const closeForm = () => {
-    setaddPlantVisible(false)
-    setNewPlant(true)
+    setAddPlantVisible(!addPlantVisible);
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeUser}>{greeting}</Text>
-      <Text style={styles.dateText}>{dateTime}</Text>
+      <Text style={styles.dateText}>{today}</Text>
       <Pressable style={styles.options} onPress={() => setOptionsVisible(true)}>{settingIcon}</Pressable>
       <View style={styles.listPlants}>
-        <GetPlantsScreen user={props.user} newPlant={newPlant} setNewPlant={setNewPlant} closeIcon={closeIcon}/> 
+        <GetPlantsScreen user={props.user} closeIcon={closeIcon} today={today}/> 
       </View>
-      <Modal animationType="slide" transparent={true} visible={optionsVisible}>
-          <View style={styles.optionsView}></View>
-            <Text style={styles.signOutText} onPress={signOut}>Sign Out</Text>
-            <Pressable style={styles.closeOptions} onPress={() => {setOptionsVisible(false)}}>{closeIcon}</Pressable>
-      </Modal>
 
-      <Modal animationType="slide" transparent={true} visible={addPlantVisible}>
-        <View style={styles.addPlantView}>
-          <View style={styles.addPlantForm}>
-            <AddPlantScreen closeForm={closeForm} user={props.user}/>
-            <Pressable style={styles.closeButton} onPress={() => {setaddPlantVisible(false)}}>{closeIcon}</Pressable>
-          </View>
+      <Modal animationType="slide" transparent={true} visible={optionsVisible}>
+        <View style={styles.optionsView}>
+          <Text style={styles.signOutText} onPress={signOut}>Sign Out</Text>
+          <Pressable style={styles.closeOptions} onPress={() => {setOptionsVisible(false)}}>{closeIcon}</Pressable>
         </View>
       </Modal>
 
-      <Pressable style={styles.addPlantBackground} onPress={() => setaddPlantVisible(true)}> 
-       <Icon name="add" size={55} style={styles.addPlantIcon}/>
+      
+        <Modal animationType="slide" transparent={true} visible={addPlantVisible}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.addPlantView}>
+              <View style={styles.addPlantForm}>
+                <AddPlantScreen closeForm={closeForm} user={props.user} />
+                <Pressable style={styles.closeButton} onPress={() => {setAddPlantVisible(!addPlantVisible)}}>{closeIcon}</Pressable>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      
+
+      <Pressable style={styles.addPlantBackground} onPress={() => setAddPlantVisible(!addPlantVisible)}> 
+      <Icon name="add" size={55} style={styles.addPlantIcon}/>
       </Pressable>
       <StatusBar style="auto" />
     </View>
@@ -121,18 +121,16 @@ const styles = StyleSheet.create({
   },
   signOutText: {
     position: 'absolute',
+    textAlign: 'center',
     fontFamily: 'ChalkboardSE-Regular',
     textDecorationLine: 'underline',
     fontSize: 18,
     color: 'red',
-    top: 70,
-    right: 50,
-    padding: 5
+    width: 80,
+    marginTop: 30
   },
   closeOptions: {
     position: 'absolute',
-    top: 120,
-    right: 75
   },
   addPlantView: {
     flex: 1,

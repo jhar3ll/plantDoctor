@@ -1,55 +1,65 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Pressable, TextInput} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, Pressable, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
+import moment from 'moment';
 import '@azure/core-asynciterator-polyfill'
 
 const AddPlantScreen = (props) => {
-  const [plantName, setPlantName] = useState(undefined)
-  const [waterFrequency, setWaterFrequency] = useState(undefined)
-
+  const [plantName, setPlantName] = useState(undefined);
+  const [waterFrequency, setWaterFrequency] = useState(undefined);
+  const [formError, setFormError] = useState('');
+  
 const handleSubmit = async () => {  
+  const today = moment().format('dddd, MMM. D, YYYY');
   try {
     await DataStore.save(
       new Plant({
       "name": plantName,
       "waterFrequency": Number(waterFrequency),
-      "owner": String(props.user.username)
+      "owner": String(props.user.username),
+      "waterings": [{"waterDate": today, "waterCount": 0}]
     })
   );
-    props.closeForm()
-    console.log("success!")
+    props.closeForm();
+    console.log("success!");
   } catch (error) {
-    console.log(error)
-    setFormError(error.toString())
+    console.log(error);
+    setFormError(error.toString());
   }
 }
 
 return (
-    <>
-      <View style={styles.addPlantView}>
-        <TextInput
-          style={styles.input}
-          onChangeText={setPlantName}
-          value={plantName}
-          placeholder="plant name"
-          placeholderTextColor={"#808080"}
-          />
+  <>
+    <View style={styles.addPlantView}>
+      <Text style={{color: 'red'}}>{formError}</Text>
+      <TextInput
+        style={styles.input}
+        onFocus={() => setFormError('')}
+        clearButtonMode='while-editing'
+        onChangeText={setPlantName}
+        value={plantName}
+        placeholder="plant name"
+        placeholderTextColor={"#808080"}
+        />
 
-        <TextInput
-          style={styles.input}
-          onChangeText={setWaterFrequency}
-          value={waterFrequency}
-          placeholder="waterings per day"
-          keyboardType="numeric"
-          placeholderTextColor={"#808080"}
-          />
+      <TextInput
+        style={styles.input}
+        onFocus={() => setFormError('')}
+        clearButtonMode='while-editing'
+        onChangeText={setWaterFrequency}
+        value={waterFrequency}
+        placeholder="waterings per day"
+        keyboardType="numeric"
+        placeholderTextColor={"#808080"}
+        />
 
-          <Pressable style={styles.addPlantButton} underlayColor='#fff' onPress={handleSubmit}>
-            <Text style={styles.addPlantButtonText}>Add Plant</Text>
-          </Pressable>
-      </View>
-    </>
+        <Pressable style={styles.addPlantButton} underlayColor='#fff' onPress={handleSubmit}>
+          <Text style={styles.addPlantButtonText}>Add Plant</Text>
+        </Pressable>
+        
+    </View>
+  </>
   );
 };
 

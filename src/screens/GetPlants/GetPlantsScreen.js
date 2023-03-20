@@ -1,120 +1,116 @@
-import React, {useEffect,useState} from 'react';
-import {StyleSheet, View, Text, Image, Pressable, TextInput } from 'react-native';
-import { DataStore } from '@aws-amplify/datastore';
+import React, { useEffect,useState} from 'react';
+import {StyleSheet, View, Text, Image, Pressable, ActivityIndicator } from 'react-native';
+import { DataStore, SortDirection } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 import Icon  from 'react-native-vector-icons/Ionicons';
-import Checkmark from '../../components/Checkmark';
+import Checkmark from '../../components/Checkmark/Checkmark';
 import { Overlay } from '@rneui/themed';
+import ViewPlantScreen from '../ViewPlant/ViewPlantScreen';
 
 const GetPlantsScreen = (props) => {
   const user = props.user.username;
-  const [userPlants, setUserPlants] = useState([]);
   const [userPlant, setUserPlant] = useState(undefined);
+  const [userPlants, setUserPlants] = useState([]);
   const [overlayVisible, setOverlayVisible] = useState(false);
-  const [updatedPlant, setUpdatedPlant] = useState({})
- 
-  const getAllPlants = async () => {
-    try {
-      let plants = (await DataStore.query(Plant, p => p.owner.eq(user))
-      ).sort((a,b) => a.name > b.name ? 1 : -1);
-      setUserPlants(plants);
-      props.setNewPlant(false)
-    } catch (error){
-      console.log(error)
+  const [synced, setSynced] = useState(false);
+  
+  useEffect(() => {
+    const subscription =  DataStore.observeQuery(
+      Plant, 
+      p => p.and(p => [p.owner.eq(user)]), {
+      sort: s => s.name(SortDirection.ASCENDING)
+      }).subscribe(snapshot => {
+      const { items, isSynced } = snapshot;
+      console.log(snapshot)
+      if (!isSynced) {
+        setUserPlants([]);
+      } else {
+        setUserPlants(items);
+        setSynced(isSynced);
+      }
+    })
+      return () => {
+        subscription.unsubscribe();
     }
-  }
+  }, [synced])
 
   const getPlant = (plant) => {
-    let times = ''
-    plant.waterFrequency === 1 ? times = 'time' : times = 'times' 
-     setUserPlant(
-      <View style={styles.viewPlant}> 
-        <Image style={styles.viewPlantCactus} source={require('../../../assets/icons/cactus.png')} />
-        <Text style={styles.viewPlantName}>{plant.name}</Text>
-        <Text style={styles.viewPlantWater}> Needs water {plant.waterFrequency} {times} per day.</Text>
-
-        <View style={styles.updatePlantView}>
-          <TextInput
-            style={styles.input}
-            //onChangeText={setUpdatedPlant}
-            //value={plantName}
-            placeholder="plant name"
-            placeholderTextColor={"#808080"}
-            defaultValue={plant.name}
-            />
-
-          <TextInput
-            style={styles.input}
-            // onChangeText={setWaterFrequency}
-            // value={waterFrequency}
-            placeholder="waterings per day"
-            keyboardType="numeric"
-            placeholderTextColor={"#808080"}
-            defaultValue={plant.waterFrequency.toString()}
-            />
-        </View>
-
-        <Pressable style={styles.updatePlantButton} underlayColor='#fff' onPress={() => updatePlant(plant)}>
-          <Text style={styles.updatePlantButtonText}>Update Plant</Text>
-        </Pressable>
-        <Pressable style={styles.deletePlantButton} underlayColor='#fff' onPress={() => deletePlant(plant)}>
-          <Text style={styles.deletePlantButtonText}>Delete Plant</Text>
-        </Pressable>
-      </View>
-    )
+    setUserPlant(plant);
   }
-  
-  const updatePlant = async (plant) => {
-
-  }
-
-  const deletePlant = async (plant) => {
-    try {
-      await DataStore.delete(Plant, (plant) => plant.waterFrequency.gt(0))
-      props.setNewPlant(true)
-    } catch (error){
-      console.log(error)
+ 
+  const updatePlantCount = async (plant) => {
+    const waterings = [];
+    
+    for (let i=0; i<plant.waterings.length; i++){
+      if (plant.waterings[i].waterDate != props.today){
+        waterings.push(plant.waterings[i]);
+      } else {
+        waterings.push({"waterCount": (plant.waterings[i].waterCount + 1), "waterDate": props.today});
+      }
     }
+
+    try{
+      await DataStore.save(Plant.copyOf(plant, updated => {
+        updated.waterings = waterings;
+        })
+      );
+      setSynced(false);
+      setUserPlants([]);
+      console.log('updatePlant', 'success')
+    } catch (error) {
+      console.log('updatePlant', error)
+    } 
   }
 
-  const renderCheck = (waterFrequency) => {
-    const checks = [];
-    for (let i=0; i<waterFrequency; i++){
-      checks.push(<Checkmark />)
+  const renderChecks = (plant) => {
+    if (synced) {
+      const checks = [];
+      let waterCount = 0;
+      
+        for (let i=0; i<plant.waterings.length; i++){
+          if (plant.waterings[i].waterDate === props.today){
+            waterCount = plant.waterings[i].waterCount;
+          }
+        }
+        
+        for (let j=0; j<(plant.waterFrequency - waterCount); j++){
+          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={false}/>
+          checks.push(check);
+        }
+
+        for (let k=0; k<waterCount; k++){
+          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={true}/>
+          checks.push(check);
+        }
+        return checks;
+      }
     }
-    return checks;
-  }
 
-  const toggleOverlay = () => {
-    setOverlayVisible(!overlayVisible);
-  }
-
-  useEffect(() => {
-    getAllPlants();
-  }, [props.newPlant])
+  if (!synced){ return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <ActivityIndicator />
+    </View>)}
 
 return (   
-      <View style={styles.container}>
-         <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
-           <View>{userPlant}</View> 
-            
-            <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
-          </Overlay>
+    <View style={styles.container}>
+      <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
+        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} setUserPlants={setUserPlants} setSynced={setSynced} />
+        <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
+      </Overlay>
 
-        {
-          userPlants.map((plant) => {
-            return(
-            <View key={plant.id} style={styles.plant} >
-              <Pressable onPress={() => [setOverlayVisible(!overlayVisible), getPlant(plant)]}>
-                <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')} />
-              </Pressable>
-              <Text style={styles.plantText}>{plant.name}</Text>
-              <Icon style={styles.plantWatering}>{renderCheck(plant.waterFrequency)}</Icon>
-            </View>
-            )
-          })
-        }
-      </View>
+      {userPlants.map((plant, index) => {
+        return(
+          <View key={index} style={styles.plant} >
+            <Pressable onPress={() => [setOverlayVisible(!overlayVisible), getPlant(plant)]}>
+              <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')} />
+            </Pressable>
+            <Text style={styles.plantText}>{plant.name}</Text>
+            <Icon style={styles.plantWatering}>{renderChecks(plant)}</Icon>
+          </View>
+          )
+        }) 
+      }
+    </View>
   );
 };
 
@@ -161,80 +157,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     textAlign: 'right',
     right: -420
-  },
-  
-  viewPlant: {
-    flex: 1,
-    alignItems: 'center'
-  },
-  viewPlantCactus: {
-    position: 'absolute',
-    height: 250,
-    width: 250,
-    alignSelf: 'center'
-  }, 
-  viewPlantName:{
-    position: 'absolute',
-    marginTop: 270,
-    fontFamily: 'ChalkboardSE-Regular',
-    fontSize: 48,
-  },
-  viewPlantWater: {
-    fontFamily: 'ChalkboardSE-Regular',
-    top: 350,
-    fontSize: 24,
-    fontStyle: 'italic'
-  },
-  updatePlantButton: {
-    flex: 1,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    left: 0,
-    backgroundColor: '#B3EFA9',
-    bottom: 100,
-    width: 150,
-    height: 60,
-    padding: 10,
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: '#000',
-  },
-  updatePlantButtonText: {
-    position: 'absolute',
-    fontFamily: 'ChalkboardSE-Regular',
-    fontSize: 20,
-  }, 
-  deletePlantButton: {
-    flex: 1,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 0,
-    backgroundColor: '#B3EFA9',
-    bottom: 100,
-    width: 150,
-    height: 60,
-    padding: 10,
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: '#000',
-  },
-  deletePlantButtonText: {
-    position: 'absolute',
-    fontFamily: 'ChalkboardSE-Regular',
-    color: 'red',
-    fontSize: 20,
-  }, 
-  input: {
-    top: 30,
-    height: 40,
-    width: 280,
-    margin: 20,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 30
-  },
+  }
 });
 
 export default GetPlantsScreen;

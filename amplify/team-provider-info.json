@@ -1,4 +1,25 @@
 {
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-plantdoctor-dev-230938-authRole",
+      "UnauthRoleArn": "arn:aws:iam::626855617193:role/amplify-plantdoctor-dev-230938-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::626855617193:role/amplify-plantdoctor-dev-230938-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-plantdoctor-dev-230938-deployment",
+      "UnauthRoleName": "amplify-plantdoctor-dev-230938-unauthRole",
+      "StackName": "amplify-plantdoctor-dev-230938",
+      "StackId": "arn:aws:cloudformation:us-east-1:626855617193:stack/amplify-plantdoctor-dev-230938/1fd5dc90-c6ab-11ed-955c-12dfaf13d3ff",
+      "AmplifyAppId": "ds6khm3s9kooh"
+    },
+    "categories": {
+      "auth": {
+        "PlantDoctor": {}
+      },
+      "storage": {
+        "s3plantdoctorstorage842d4606": {}
+      }
+    }
+  },
   "staging": {
     "awscloudformation": {
       "AuthRoleName": "amplify-plantdoctor-staging-52134-authRole",
