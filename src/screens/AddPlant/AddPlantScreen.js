@@ -18,8 +18,7 @@ const handleSubmit = async () => {
       "name": plantName,
       "waterFrequency": Number(waterFrequency),
       "owner": String(props.user.username),
-      "waterDate": today,
-      "waterCount": 0
+      "waterings": [{"waterDate": today, "waterCount": 0}]
     })
   );
     props.closeForm();

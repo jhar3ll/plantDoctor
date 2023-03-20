@@ -1,6 +1,5 @@
 import { withAuthenticator, AmplifyTheme } from 'aws-amplify-react-native';
-import { Authenticator } from 'aws-amplify-react-native';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import config from '../../aws-exports'
 import { Amplify } from 'aws-amplify';
 

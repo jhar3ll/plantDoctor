@@ -20,11 +20,9 @@ const ViewPlantScreen = (props) => {
     } 
 
     try{
-      DataStore.start();
       await DataStore.save(Plant.copyOf(userPlant, updated => {
         updated.name = updatedPlant.name;
         updated.waterFrequency = Number(updatedPlant.waterFrequency);
-        updated.waterCount = 0;
         })
       );
       props.setOverlayVisible(false);
@@ -40,6 +38,8 @@ const ViewPlantScreen = (props) => {
     try {
       await DataStore.delete(userPlant);
       props.setOverlayVisible(false);
+      props.setSynced(false);
+      props.setUserPlants([]);
     } catch (error){
       console.log('deletePlant', error);
     }
@@ -70,8 +70,8 @@ return (
         <Text style={styles.formError}>{formError}</Text>
         <TextInput
           style={styles.input}
-          onFocus={() => setFormError('')}
           clearButtonMode='always'
+          onFocus={() => setFormError('')}
           defaultValue={updatedPlant.name}
           onChangeText={newName => {
             setUpdatedPlant({

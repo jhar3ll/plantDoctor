@@ -21,10 +21,10 @@ const GetPlantsScreen = (props) => {
       sort: s => s.name(SortDirection.ASCENDING)
       }).subscribe(snapshot => {
       const { items, isSynced } = snapshot;
+      console.log(snapshot)
       if (!isSynced) {
         setUserPlants([]);
       } else {
-        console.log(snapshot)
         setUserPlants(items);
         setSynced(isSynced);
       }
@@ -32,16 +32,26 @@ const GetPlantsScreen = (props) => {
       return () => {
         subscription.unsubscribe();
     }
-  }, [])
+  }, [synced])
 
   const getPlant = (plant) => {
     setUserPlant(plant);
   }
  
   const updatePlantCount = async (plant) => {
+    const waterings = [];
+    
+    for (let i=0; i<plant.waterings.length; i++){
+      if (plant.waterings[i].waterDate != props.today){
+        waterings.push(plant.waterings[i]);
+      } else {
+        waterings.push({"waterCount": (plant.waterings[i].waterCount + 1), "waterDate": props.today});
+      }
+    }
+
     try{
       await DataStore.save(Plant.copyOf(plant, updated => {
-        updated.waterCount = (plant.waterCount + 1);
+        updated.waterings = waterings;
         })
       );
       setSynced(false);
@@ -55,12 +65,20 @@ const GetPlantsScreen = (props) => {
   const renderChecks = (plant) => {
     if (synced) {
       const checks = [];
-        for (let i=0; i<(plant.waterFrequency - plant.waterCount); i++){
+      let waterCount = 0;
+      
+        for (let i=0; i<plant.waterings.length; i++){
+          if (plant.waterings[i].waterDate === props.today){
+            waterCount = plant.waterings[i].waterCount;
+          }
+        }
+        
+        for (let j=0; j<(plant.waterFrequency - waterCount); j++){
           const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={false}/>
           checks.push(check);
         }
 
-        for (let i=0; i<plant.waterCount; i++){
+        for (let k=0; k<waterCount; k++){
           const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={true}/>
           checks.push(check);
         }

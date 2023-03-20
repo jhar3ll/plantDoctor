@@ -1,9 +1,13 @@
+type Watering {
+  waterDate: String
+  waterCount: Int
+}
+
 type Plant @model @auth(rules: [{allow: owner}, {allow: groups, groups: ["us-east-1_59IL2eamW_Facebook"], operations: [read, create, update, delete]}, {allow: public}, {allow: private}]) {
   id: ID!
   name: String!
   waterFrequency: Int!
   owner: String!
-  waterDate: String!
-  waterCount: Int!
+  waterings: [Watering]
 }
  

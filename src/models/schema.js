@@ -31,19 +31,15 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "waterDate": {
-                    "name": "waterDate",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "waterCount": {
-                    "name": "waterCount",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": true,
-                    "attributes": []
+                "waterings": {
+                    "name": "waterings",
+                    "isArray": true,
+                    "type": {
+                        "nonModel": "Watering"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -124,7 +120,27 @@ export const schema = {
         }
     },
     "enums": {},
-    "nonModels": {},
+    "nonModels": {
+        "Watering": {
+            "name": "Watering",
+            "fields": {
+                "waterDate": {
+                    "name": "waterDate",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "waterCount": {
+                    "name": "waterCount",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            }
+        }
+    },
     "codegenVersion": "3.3.5",
-    "version": "9ce5593cb8c5c955305079ff8d59e8b0"
+    "version": "61542d8f74b352c813d855f2959d044c"
 };
