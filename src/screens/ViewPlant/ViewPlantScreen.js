@@ -70,7 +70,7 @@ const ViewPlantScreen = (props) => {
     const difference = (a,b) => {
       let date1 = moment(a.waterDate, 'dddd, MMM. D, YYYY');
       let date2 = moment(b.waterDate, 'dddd, MMM. D, YYYY');
-      return date1.diff(date2, 'days')
+      return date2.diff(date1, 'days')
     }
     
     const sorted = dates.sort((a,b) => difference(a,b))
