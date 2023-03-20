@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import {StyleSheet, View, Text, Pressable, TextInput, Image, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
+import moment from 'moment/moment';
 import '@azure/core-asynciterator-polyfill'
 
 const ViewPlantScreen = (props) => {
   const userPlant = props.userPlant;
   const [updatedPlant, setUpdatedPlant] = useState({name: userPlant.name, waterFrequency: userPlant.waterFrequency.toString()});
   const [formError, setFormError] = useState('');
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
   let times = userPlant.waterFrequency === 1 ? 'time' : 'times';
 
   const updatePlant = async () => {
@@ -59,13 +61,31 @@ const ViewPlantScreen = (props) => {
     ])
   }
   
+  const getHistory = () => {
+    let dates = [];
+    for (let i=0; i<userPlant.waterings.length; i++){
+      dates.push({"waterCount": (userPlant.waterings[i].waterCount), "waterDate": userPlant.waterings[i].waterDate })
+    }
+
+    const difference = (a,b) => {
+      let date1 = moment(a.waterDate, 'dddd, MMM. D, YYYY');
+      let date2 = moment(b.waterDate, 'dddd, MMM. D, YYYY');
+      return date1.diff(date2, 'days')
+    }
+    
+    const sorted = dates.sort((a,b) => difference(a,b))
+    console.log(sorted)
+  }
+
+
+ getHistory();
 return (
   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.viewPlant}> 
       <Image style={styles.viewPlantCactus} source={require('../../../assets/icons/cactus.png')} />
       <Text style={styles.viewPlantName}>{userPlant.name}</Text>
       <Text style={styles.viewPlantWater}> Needs water {userPlant.waterFrequency} {times} per day.</Text>
-
+      {showUpdateForm ? (
       <View style={styles.updatePlantView} >
         <Text style={styles.formError}>{formError}</Text>
         <TextInput
@@ -101,7 +121,12 @@ return (
           keyboardType="number-pad"
           />
       </View>
-
+      ):( 
+        <View>
+          <Text style={styles.plantHistory}>Plant History:</Text>
+          <View></View>
+        </View>
+      )}
       <Pressable style={styles.updatePlantButton} underlayColor='#fff' onPress={updatePlant}>
         <Text style={styles.updatePlantButtonText}>Update Plant</Text>
       </Pressable>
@@ -144,6 +169,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     marginTop: 20,
     color: 'red'
+  },
+  plantHistory: {
+    fontFamily: 'ChalkboardSE-Regular',
+    top: 350,
+    fontSize: 24,
   },
   updatePlantButton: {
     flex: 1,
