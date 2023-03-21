@@ -6,10 +6,12 @@ import moment from 'moment/moment';
 import '@azure/core-asynciterator-polyfill'
 
 const ViewPlantScreen = (props) => {
+  const today = moment().format('dddd, MMM. D, YYYY');
   const userPlant = props.userPlant;
   const [updatedPlant, setUpdatedPlant] = useState({name: userPlant.name, waterFrequency: userPlant.waterFrequency.toString()});
   const [formError, setFormError] = useState('');
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  let waterHistories = [];
   let times = userPlant.waterFrequency === 1 ? 'time' : 'times';
 
   const updatePlant = async () => {
@@ -64,7 +66,9 @@ const ViewPlantScreen = (props) => {
   const getHistory = () => {
     let dates = [];
     for (let i=0; i<userPlant.waterings.length; i++){
-      dates.push({"waterCount": (userPlant.waterings[i].waterCount), "waterDate": userPlant.waterings[i].waterDate })
+      if (userPlant.waterings[i].waterDate != today){
+        dates.push({"waterCount": (userPlant.waterings[i].waterCount), "waterDate": userPlant.waterings[i].waterDate })
+      }
     }
 
     const difference = (a,b) => {
@@ -74,11 +78,18 @@ const ViewPlantScreen = (props) => {
     }
     
     const sorted = dates.sort((a,b) => difference(a,b))
-    console.log(sorted)
+    const histories = [{"day": "Yesterday: ", "count": sorted[0].waterCount}];
+    if (sorted.length === 2){
+      histories.push({"day": "2 days ago: ", "count": sorted[1].waterCount});
+    } else if (sorted.length === 3){
+      histories.push({"day": "2 days ago: ", "count": sorted[1].waterCount, "day": "3 days ago: ", "count": sorted[2].waterCount});
+    }
+    waterHistories = histories;
   }
 
 
  getHistory();
+ 
 return (
   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.viewPlant}> 
@@ -122,9 +133,18 @@ return (
           />
       </View>
       ):( 
-        <View>
-          <Text style={styles.plantHistory}>Plant History:</Text>
-          <View></View>
+        <View style={styles.plantHistoryView}>
+          <Text style={styles.plantHistoryText}>Plant History:</Text>
+          {waterHistories.map((history, index) => {
+          return (
+            <View key={index} style={styles.histories} >
+              <Text style={styles.historyDay}>{history.day}</Text>
+              <Text style={styles.historyCount}>{history.count}</Text>
+            </View>
+          )
+          
+          })
+          }
         </View>
       )}
       <Pressable style={styles.updatePlantButton} underlayColor='#fff' onPress={updatePlant}>
@@ -170,10 +190,32 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: 'red'
   },
-  plantHistory: {
+  plantHistoryView: {
+    position: 'relative',
+    top: 385,
+    left: 0
+  },
+  plantHistoryText: {
+    position: 'absolute',
     fontFamily: 'ChalkboardSE-Regular',
-    top: 350,
-    fontSize: 24,
+    top: -25,
+    alignSelf: 'center',
+    width: 125,
+    fontSize: 20
+  },
+  histories: {
+    position: 'relative',
+    marginLeft: 0
+  },
+  historyDay: {
+    position: 'relative',
+    textAlign: 'left',
+    marginTop: 50,
+    left: -135
+  },
+  historyCount: {
+    position: 'relative',
+    right: -200
   },
   updatePlantButton: {
     flex: 1,
