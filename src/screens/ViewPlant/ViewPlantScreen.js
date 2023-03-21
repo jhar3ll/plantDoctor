@@ -63,7 +63,7 @@ const ViewPlantScreen = (props) => {
   }
 
   const getHistory = () => {
-    let dates = [];
+    const dates = [];
     for (let i=0; i<userPlant.waterings.length; i++){
       if (userPlant.waterings[i].waterDate != today){
         dates.push({"waterCount": (userPlant.waterings[i].waterCount), "waterDate": userPlant.waterings[i].waterDate })
@@ -79,7 +79,7 @@ const ViewPlantScreen = (props) => {
     const sorted = dates.sort((a,b) => difference(a,b))
     const histories = [{"day": "Yesterday:", "count": sorted[0].waterCount}];
     if (sorted.length === 2){
-      histories.push({"day": "2 days ago", "count": sorted[1].waterCount});
+      histories.push({"day": "2 days ago:", "count": sorted[1].waterCount});
     } else if (sorted.length === 3){
       histories.push({"day": "2 days ago:", "count": sorted[1].waterCount, "day":"3 days ago:", "count": sorted[2].waterCount});
     }
@@ -143,6 +143,9 @@ return (
           placeholderTextColor={"#808080"}
           keyboardType="number-pad"
           />
+          <Pressable style={styles.savePlantButton} underlayColor='#fff' onPress={updatePlant}>
+            <Text style={styles.savePlantButtonText}>Save</Text>
+          </Pressable>
       </View>
       ):( 
         <>
@@ -159,8 +162,11 @@ return (
           }
         </>
       )}
-      <Pressable style={styles.updatePlantButton} underlayColor='#fff' onPress={updatePlant}>
-        <Text style={styles.updatePlantButtonText}>Update Plant</Text>
+      <Pressable style={styles.updatePlantButton} underlayColor='#fff' onPress={() => setShowUpdateForm(!showUpdateForm)}>
+      {showUpdateForm ? <Text style={styles.updatePlantButtonText}>Plant History</Text> 
+      :
+        <Text style={styles.updatePlantButtonText}>Update Plant</Text>  
+      }
       </Pressable>
       <Pressable style={styles.deletePlantButton} underlayColor='#fff' onPress={confirmDelete}>
         <Text style={styles.deletePlantButtonText}>Delete Plant</Text>
@@ -206,7 +212,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     fontFamily: 'ChalkboardSE-Regular',
     textDecorationLine: 'underline',
-    
     top: 365,
     alignSelf: 'center',
     width: 125,
@@ -229,11 +234,26 @@ const styles = StyleSheet.create({
   historyCount: {
     position: 'absolute',
     right: -240,
-    marginTop: 30
-    
+    marginTop: 30,
+  },
+  savePlantButton: {
+    position: 'absolute',
+    alignItems: 'center',
+    backgroundColor: '#B3EFA9',
+    top: 128,
+    width: 100,
+    height: 40,
+    padding: 10,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#000',
+  },
+  savePlantButtonText: {
+    position: 'absolute',
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 20,
   },
   updatePlantButton: {
-    flex: 1,
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
@@ -274,10 +294,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
   }, 
   input: {
-    top: 30,
+    top: 10,
     height: 40,
     width: 280,
-    margin: 20,
+    margin: 10,
     borderWidth: 1,
     padding: 10,
     borderRadius: 30
