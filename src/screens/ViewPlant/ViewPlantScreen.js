@@ -87,14 +87,14 @@ const ViewPlantScreen = (props) => {
     if (sorted.length === 2){
       histories.push({"day": "2 days ago:", "count": sorted[1].waterCount});
     } else if (sorted.length === 3){
-      histories.push({"day": "2 days ago:", "count": sorted[1].waterCount, "day":"3 days ago:", "count": sorted[2].waterCount});
+      histories.push({"day": "2 days ago:", "count": sorted[1].waterCount}, {"day":"3 days ago:", "count": sorted[2].waterCount});
     }
     waterHistories = histories;
   }
 
   const renderChecks = (history) => {
     const checks = [];
-
+    
       for (let i=0; i<(userPlant.waterFrequency - history.count); i++){
         const check = <Checkmark plant={userPlant} checked={false} editable={false} size={30}/>
         checks.push(check);
@@ -103,7 +103,6 @@ const ViewPlantScreen = (props) => {
         const check = <Checkmark plant={userPlant} checked={true} editable={false} size={30}/>
         checks.push(check);
       }
-      
       return checks;
     }
   
