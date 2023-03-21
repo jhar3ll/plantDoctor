@@ -1,8 +1,9 @@
-import React, { useState } from 'react'; 
+import React, { useEffect, useState } from 'react'; 
 import {StyleSheet, View, Text, Pressable, TextInput, Image, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { Plant } from '../../models'
 import moment from 'moment/moment';
+import Checkmark from '../../components/Checkmark/Checkmark';
 import '@azure/core-asynciterator-polyfill'
 
 const ViewPlantScreen = (props) => {
@@ -31,7 +32,6 @@ const ViewPlantScreen = (props) => {
       );
       props.setOverlayVisible(false);
       props.setSynced(false);
-      props.setUserPlants([]);
       console.log('updatePlant', 'success')
     } catch (error) {
       console.log('updatePlant', error)
@@ -43,7 +43,6 @@ const ViewPlantScreen = (props) => {
       await DataStore.delete(userPlant);
       props.setOverlayVisible(false);
       props.setSynced(false);
-      props.setUserPlants([]);
     } catch (error){
       console.log('deletePlant', error);
     }
@@ -62,7 +61,7 @@ const ViewPlantScreen = (props) => {
       {text: 'No'}
     ])
   }
-  
+
   const getHistory = () => {
     let dates = [];
     for (let i=0; i<userPlant.waterings.length; i++){
@@ -78,18 +77,31 @@ const ViewPlantScreen = (props) => {
     }
     
     const sorted = dates.sort((a,b) => difference(a,b))
-    const histories = [{"day": "Yesterday: ", "count": sorted[0].waterCount}];
+    const histories = [{"day": "Yesterday:", "count": sorted[0].waterCount}];
     if (sorted.length === 2){
-      histories.push({"day": "2 days ago: ", "count": sorted[1].waterCount});
+      histories.push({"day": "2 days ago", "count": sorted[1].waterCount});
     } else if (sorted.length === 3){
-      histories.push({"day": "2 days ago: ", "count": sorted[1].waterCount, "day": "3 days ago: ", "count": sorted[2].waterCount});
+      histories.push({"day": "2 days ago:", "count": sorted[1].waterCount, "day":"3 days ago:", "count": sorted[2].waterCount});
     }
     waterHistories = histories;
   }
 
+  const renderChecks = (history) => {
+    const checks = [];
 
- getHistory();
- 
+      for (let i=0; i<(userPlant.waterFrequency - history.count); i++){
+        const check = <Checkmark plant={userPlant} checked={false} editable={false} size={30}/>
+        checks.push(check);
+      }
+      for (let j=0; j<history.count; j++){   
+        const check = <Checkmark plant={userPlant} checked={true} editable={false} size={30}/>
+        checks.push(check);
+      }
+      
+      return checks;
+    }
+  
+  getHistory();
 return (
   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.viewPlant}> 
@@ -133,19 +145,19 @@ return (
           />
       </View>
       ):( 
-        <View style={styles.plantHistoryView}>
+        <>
           <Text style={styles.plantHistoryText}>Plant History:</Text>
           {waterHistories.map((history, index) => {
           return (
             <View key={index} style={styles.histories} >
               <Text style={styles.historyDay}>{history.day}</Text>
-              <Text style={styles.historyCount}>{history.count}</Text>
+              <Text style={styles.historyCount}>{renderChecks(history)}</Text>
             </View>
           )
           
           })
           }
-        </View>
+        </>
       )}
       <Pressable style={styles.updatePlantButton} underlayColor='#fff' onPress={updatePlant}>
         <Text style={styles.updatePlantButtonText}>Update Plant</Text>
@@ -190,32 +202,35 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: 'red'
   },
-  plantHistoryView: {
-    position: 'relative',
-    top: 385,
-    left: 0
-  },
   plantHistoryText: {
-    position: 'absolute',
+    position: 'relative',
     fontFamily: 'ChalkboardSE-Regular',
-    top: -25,
+    textDecorationLine: 'underline',
+    
+    top: 365,
     alignSelf: 'center',
     width: 125,
     fontSize: 20
   },
   histories: {
     position: 'relative',
-    marginLeft: 0
+    top: 350,
+    left: -135,
+    margin: -5
   },
   historyDay: {
     position: 'relative',
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 22,
     textAlign: 'left',
-    marginTop: 50,
-    left: -135
+    marginLeft: 28,
+    marginTop: 20
   },
   historyCount: {
-    position: 'relative',
-    right: -200
+    position: 'absolute',
+    right: -240,
+    marginTop: 30
+    
   },
   updatePlantButton: {
     flex: 1,

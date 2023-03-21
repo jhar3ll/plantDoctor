@@ -103,12 +103,12 @@ const GetPlantsScreen = (props) => {
         }
         
         for (let j=0; j<(plant.waterFrequency - waterCount); j++){
-          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={false}/>
+          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={false} editable={true} size={40}/>
           checks.push(check);
         }
 
         for (let k=0; k<waterCount; k++){
-          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={true}/>
+          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={true} editable={false} size={40}/>
           checks.push(check);
         }
         return checks;
@@ -123,7 +123,7 @@ const GetPlantsScreen = (props) => {
 return (   
     <View style={styles.container}>
       <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
-        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} setUserPlants={setUserPlants} setSynced={setSynced} />
+        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} setSynced={setSynced} />
         <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
       </Overlay>
 
