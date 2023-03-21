@@ -15,25 +15,54 @@ const GetPlantsScreen = (props) => {
   const [synced, setSynced] = useState(false);
   
   useEffect(() => {
+    setUserPlants([]);
     const subscription =  DataStore.observeQuery(
       Plant, 
       p => p.and(p => [p.owner.eq(user)]), {
       sort: s => s.name(SortDirection.ASCENDING)
       }).subscribe(snapshot => {
       const { items, isSynced } = snapshot;
-      console.log(snapshot)
-      if (!isSynced) {
-        setUserPlants([]);
-      } else {
+      //console.log(snapshot)
         setUserPlants(items);
         setSynced(isSynced);
-      }
+     
     })
       return () => {
         subscription.unsubscribe();
     }
   }, [synced])
 
+  const updateDays = async (plant, waterings) => {
+    try{
+      DataStore.save(Plant.copyOf(plant, updated => {
+       updated.waterings = waterings;
+       })
+     );
+     setSynced(false);
+     setUserPlants([]);
+     console.log('updatePlant', 'success')
+   } catch (error) {
+     console.log('updatePlant', error)
+   }
+  }
+
+  const newDays =  () => {
+    userPlants.map(p => {
+      let waterings = p.waterings;
+      let isToday = false;
+      
+      for (let i=0; i<p.waterings.length; i++){
+        if (p.waterings[i].waterDate === props.today){
+          isToday = true;
+        }
+      }
+     
+      if (!isToday) {
+        updateDays(p, [...waterings, {"waterDate": props.today, "waterCount": 0}]);
+      }     
+    }
+  )}
+    
   const getPlant = (plant) => {
     setUserPlant(plant);
   }
@@ -74,12 +103,12 @@ const GetPlantsScreen = (props) => {
         }
         
         for (let j=0; j<(plant.waterFrequency - waterCount); j++){
-          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={false}/>
+          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={false} editable={true} size={40}/>
           checks.push(check);
         }
 
         for (let k=0; k<waterCount; k++){
-          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={true}/>
+          const check = <Checkmark plant={plant} updatePlantCount={updatePlantCount} checked={true} editable={false} size={40}/>
           checks.push(check);
         }
         return checks;
@@ -90,11 +119,11 @@ const GetPlantsScreen = (props) => {
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <ActivityIndicator />
     </View>)}
-
+ 
 return (   
     <View style={styles.container}>
       <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
-        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} setUserPlants={setUserPlants} setSynced={setSynced} />
+        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} setSynced={setSynced} />
         <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
       </Overlay>
 

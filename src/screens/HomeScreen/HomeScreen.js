@@ -13,14 +13,9 @@ const navigation = useNavigation();
       <Image style={styles.cactus} source={require('../../../assets/icons/cactus.png')}></Image>
       <Pressable style={styles.signUp} underlayColor='#fff'
       onPress={() => {navigation.navigate('SignUp')}}>
-        <Text style={styles.signUpText}>Create Account</Text>
+        <Text style={styles.signUpText}>Create Account/Login</Text>
       </Pressable>
-      <Pressable 
-        style={styles.signIn}
-        underlayColor='#fff'
-        onPress={() => {navigation.navigate('SignIn')}}>
-        <Text style={styles.signInText}>Login</Text>
-      </Pressable>
+      
       <StatusBar style="auto" />
     </View>
   );
@@ -57,7 +52,7 @@ signUp:{
   gap: 10,
   position: 'absolute',
   backgroundColor: '#B3EFA9',
-  width: 280,
+  width: 320,
   height: 64,
   bottom: 200,
   borderRadius: 30,
@@ -65,8 +60,8 @@ signUp:{
   borderColor: '#000000'
 }, 
 signUpText: {
-  width: 185,
-  height: 32,
+  width: 280,
+  height: 40,
   fontFamily: 'BodoniSvtyTwoITCTT-Book',
   fontStyle: 'normal',
   fontSize: 30,
