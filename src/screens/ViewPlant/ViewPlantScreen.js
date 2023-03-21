@@ -12,6 +12,7 @@ const ViewPlantScreen = (props) => {
   const [updatedPlant, setUpdatedPlant] = useState({name: userPlant.name, waterFrequency: userPlant.waterFrequency.toString()});
   const [formError, setFormError] = useState('');
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  let emptyHistory = '';
   let waterHistories = [];
   let times = userPlant.waterFrequency === 1 ? 'time' : 'times';
 
@@ -64,6 +65,11 @@ const ViewPlantScreen = (props) => {
 
   const getHistory = () => {
     const dates = [];
+    if (userPlant.waterings.length === 1){
+      emptyHistory = "Please check back tomorrow for your plant's history"
+      return;
+    }
+
     for (let i=0; i<userPlant.waterings.length; i++){
       if (userPlant.waterings[i].waterDate != today){
         dates.push({"waterCount": (userPlant.waterings[i].waterCount), "waterDate": userPlant.waterings[i].waterDate })
@@ -150,6 +156,7 @@ return (
       ):( 
         <>
           <Text style={styles.plantHistoryText}>Plant History:</Text>
+          <Text style={styles.emptyHistory}>{emptyHistory}</Text>
           {waterHistories.map((history, index) => {
           return (
             <View key={index} style={styles.histories} >
@@ -216,6 +223,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 125,
     fontSize: 20
+  },
+  emptyHistory: {
+    position: 'relative',
+    fontStyle: 'italic',
+    top: 390
   },
   histories: {
     position: 'relative',
