@@ -9,6 +9,7 @@ import ViewPlantScreen from '../ViewPlant/ViewPlantScreen';
 import moment from 'moment';
 
 const GetPlantsScreen = (props) => {
+  let today = moment().format('dddd, MMM. D, YYYY');
   const user = props.user.username;
   const [userPlant, setUserPlant] = useState(undefined);
   const [userPlants, setUserPlants] = useState([]);
@@ -37,14 +38,14 @@ const GetPlantsScreen = (props) => {
     let time = 0;
     let minute = 0;
     let interval = setInterval(() => {
-     time = moment().hour();
-     minute = moment().format('hh:mm')
-     console.log(minute, time)
-     if(time === 0){
-      newDays();
-     }
+      time = moment().hour();
+      minute = moment().format('hh:mm')
+      console.log(minute, time)
+      if(time === 0){
+        newDays();
+        today = moment().format('dddd, MMM. D, YYYY');
+      }
     }, 300000)
-    
   }
 
   useEffect(() => {
@@ -76,15 +77,15 @@ const GetPlantsScreen = (props) => {
       let isToday = false;
       
       for (let i=0; i<waterings.length; i++){
-        if (waterings[i].waterDate === props.today){
+        if (waterings[i].waterDate === today){
           isToday = true;
           return;
         }
       }
       if (waterings.length === 4){
-        updateDays(p, [{"waterDate": props.today, "waterCount": 0}, ...waterings.slice(0,3)]);
+        updateDays(p, [{"waterDate": today, "waterCount": 0}, ...waterings.slice(0,3)]);
       } else {
-        updateDays(p, [{"waterDate": props.today, "waterCount": 0}, ...waterings]);
+        updateDays(p, [{"waterDate": today, "waterCount": 0}, ...waterings]);
       }   
     }
   )}
