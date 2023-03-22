@@ -6,6 +6,7 @@ import Icon  from 'react-native-vector-icons/Ionicons';
 import Checkmark from '../../components/Checkmark/Checkmark';
 import { Overlay } from '@rneui/themed';
 import ViewPlantScreen from '../ViewPlant/ViewPlantScreen';
+import moment from 'moment';
 
 const GetPlantsScreen = (props) => {
   const user = props.user.username;
@@ -32,6 +33,24 @@ const GetPlantsScreen = (props) => {
     }
   }, [synced])
 
+  const getTime = () => {
+    let time = 0;
+    let minute = 0;
+    let interval = setInterval(() => {
+     time = moment().hour();
+     minute = moment().format('hh:mm')
+     console.log(minute, time)
+     if(time === 0){
+      newDays();
+     }
+    }, 300000)
+    
+  }
+
+  useEffect(() => {
+    getTime();
+  }, [])
+
   const updateDays = async (plant, waterings) => {
     try{
       DataStore.save(Plant.copyOf(plant, updated => {
@@ -56,17 +75,20 @@ const GetPlantsScreen = (props) => {
       let waterings = p.waterings;
       let isToday = false;
       
-      for (let i=0; i<p.waterings.length; i++){
-        if (p.waterings[i].waterDate === props.today){
+      for (let i=0; i<waterings.length; i++){
+        if (waterings[i].waterDate === props.today){
           isToday = true;
+          return;
         }
       }
-     
-      if (!isToday) {
-        updateDays(p, [...waterings, {"waterDate": props.today, "waterCount": 0}]);
-      }     
+      if (waterings.length === 4){
+        updateDays(p, [{"waterDate": props.today, "waterCount": 0}, ...waterings.slice(0,3)]);
+      } else {
+        updateDays(p, [{"waterDate": props.today, "waterCount": 0}, ...waterings]);
+      }   
     }
   )}
+
     
   const getPlant = (plant) => {
     setUserPlant(plant);
@@ -122,7 +144,7 @@ const GetPlantsScreen = (props) => {
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <ActivityIndicator />
     </View>)}
- 
+  
 return (   
     <View style={styles.container}>
       <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>

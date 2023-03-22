@@ -7,7 +7,6 @@ import Checkmark from '../../components/Checkmark/Checkmark';
 import '@azure/core-asynciterator-polyfill'
 
 const ViewPlantScreen = (props) => {
-  const today = moment().format('dddd, MMM. D, YYYY');
   const userPlant = props.userPlant;
   const [updatedPlant, setUpdatedPlant] = useState({name: userPlant.name, waterFrequency: userPlant.waterFrequency.toString()});
   const [formError, setFormError] = useState('');
@@ -46,6 +45,7 @@ const ViewPlantScreen = (props) => {
       await DataStore.delete(userPlant);
       props.setOverlayVisible(false);
       props.setSynced(false);
+      props.setUserPlants(false);
     } catch (error){
       console.log('deletePlant', error);
     }
@@ -72,24 +72,15 @@ const ViewPlantScreen = (props) => {
       return;
     }
 
-    for (let i=0; i<userPlant.waterings.length; i++){
-      if (userPlant.waterings[i].waterDate != today){
-        dates.push({"waterCount": (userPlant.waterings[i].waterCount), "waterDate": userPlant.waterings[i].waterDate })
-      }
+    for (let i=0; i<userPlant.waterings.length; i++){ 
+      dates.push({"waterCount": (userPlant.waterings[i].waterCount), "waterDate": userPlant.waterings[i].waterDate })
     }
 
-    const difference = (a,b) => {
-      let date1 = moment(a.waterDate, 'dddd, MMM. D, YYYY');
-      let date2 = moment(b.waterDate, 'dddd, MMM. D, YYYY');
-      return date2.diff(date1, 'days')
-    }
-    
-    const sorted = dates.sort((a,b) => difference(a,b))
-    const histories = [{"day": "Yesterday:", "count": sorted[0].waterCount}];
-    if (sorted.length === 2){
-      histories.push({"day": "2 days ago:", "count": sorted[1].waterCount});
-    } else if (sorted.length === 3){
-      histories.push({"day": "2 days ago:", "count": sorted[1].waterCount}, {"day":"3 days ago:", "count": sorted[2].waterCount});
+    const histories = [{"day": "Yesterday:", "count": dates[1].waterCount}];
+    if (dates.length === 3){
+      histories.push({"day": "2 days ago:", "count": dates[2].waterCount});
+    } else if (dates.length === 4){
+      histories.push({"day": "2 days ago:", "count": dates[2].waterCount}, {"day":"3 days ago:", "count": dates[3].waterCount});
     }
     waterHistories = histories;
   }
