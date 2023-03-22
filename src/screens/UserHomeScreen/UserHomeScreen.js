@@ -8,7 +8,7 @@ import Icon  from 'react-native-vector-icons/Ionicons';
 import GetPlantsScreen from '../GetPlants/GetPlantsScreen';
 
 const UserHomeScreen = (props) => {
-  const today = moment().format('dddd, MMM. D, YYYY');
+  const [today, setToday] = useState(moment().format('dddd, MMM. D, YYYY'));
   const [optionsVisible, setOptionsVisible] = useState(false);
   const [addPlantVisible, setAddPlantVisible] = useState(false);
   const settingIcon = <Icon name="settings" size={25} color='#000' />
@@ -37,7 +37,7 @@ const UserHomeScreen = (props) => {
       <Text style={styles.dateText}>{today}</Text>
       <Pressable style={styles.options} onPress={() => setOptionsVisible(true)}>{settingIcon}</Pressable>
       <View style={styles.listPlants}>
-        <GetPlantsScreen user={props.user} closeIcon={closeIcon} today={today}/> 
+        <GetPlantsScreen user={props.user} closeIcon={closeIcon} setToday={setToday}/> 
       </View>
 
       <Modal animationType="slide" transparent={true} visible={optionsVisible}>

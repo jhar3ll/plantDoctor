@@ -39,11 +39,12 @@ const GetPlantsScreen = (props) => {
     let minute = 0;
     let interval = setInterval(() => {
       time = moment().hour();
-      minute = moment().format('hh:mm')
+      minute = moment().format('hh:mm');
       console.log(minute, time)
       if(time === 0){
         newDays();
         today = moment().format('dddd, MMM. D, YYYY');
+        props.setToday(today);
       }
     }, 300000)
   }
@@ -89,8 +90,7 @@ const GetPlantsScreen = (props) => {
       }   
     }
   )}
-
-    
+  
   const getPlant = (plant) => {
     setUserPlant(plant);
   }
