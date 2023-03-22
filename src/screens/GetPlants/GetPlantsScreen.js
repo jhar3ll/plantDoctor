@@ -35,9 +35,14 @@ const GetPlantsScreen = (props) => {
   const updateDays = async (plant, waterings) => {
     try{
       DataStore.save(Plant.copyOf(plant, updated => {
-       updated.waterings = waterings;
+       updated.waterings = [];
        })
      );
+
+     DataStore.save(Plant.copyOf(plant, updated => {
+      updated.waterings = waterings;
+      })
+    );
      setSynced(false);
      setUserPlants([]);
      console.log('updatePlant', 'success')
@@ -83,8 +88,6 @@ const GetPlantsScreen = (props) => {
         updated.waterings = waterings;
         })
       );
-      setSynced(false);
-      setUserPlants([]);
       console.log('updatePlant', 'success')
     } catch (error) {
       console.log('updatePlant', error)
@@ -123,7 +126,7 @@ const GetPlantsScreen = (props) => {
 return (   
     <View style={styles.container}>
       <Overlay overlayStyle={styles.viewPlantView} animationType="slide" visible={overlayVisible} onBackdropPress={() => setOverlayVisible(!overlayVisible)}>
-        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} setSynced={setSynced} />
+        <ViewPlantScreen userPlant={userPlant} setOverlayVisible={setOverlayVisible} setSynced={setSynced} setUserPlants={setUserPlants}/>
         <Pressable style={styles.closeOverlay} onPress={() => {setOverlayVisible(!overlayVisible)}}>{props.closeIcon}</Pressable>
       </Overlay>
 
