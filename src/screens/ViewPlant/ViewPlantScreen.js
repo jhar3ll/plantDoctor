@@ -27,12 +27,6 @@ const ViewPlantScreen = (props) => {
 
     try{
       await DataStore.save(Plant.copyOf(userPlant, updated => {
-        updated.name = '';
-        updated.waterFrequency = 0;
-        })
-      );
-
-      await DataStore.save(Plant.copyOf(userPlant, updated => {
         updated.name = updatedPlant.name;
         updated.waterFrequency = Number(updatedPlant.waterFrequency);
         })
