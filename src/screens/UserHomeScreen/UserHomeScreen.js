@@ -6,6 +6,7 @@ import AddPlantScreen from '../AddPlant/AddPlantScreen';
 import { Auth } from 'aws-amplify';
 import Icon  from 'react-native-vector-icons/Ionicons';
 import GetPlantsScreen from '../GetPlants/GetPlantsScreen';
+import { DataStore } from '@aws-amplify/datastore';
 
 const UserHomeScreen = (props) => {
   const [today, setToday] = useState(moment().format('dddd, MMM. D, YYYY'));
@@ -21,7 +22,8 @@ const UserHomeScreen = (props) => {
       "Are you sure you want to sign out?",
       [{text: 'Yes', onPress:() => {
           Auth.signOut();
-          props.setUser(undefined)
+          props.setUser(undefined);
+          DataStore.clear();
         }}, 
       {text: 'No'}]
     )
@@ -74,7 +76,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#FFEEE1',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   welcomeUser: {
     position: 'absolute',

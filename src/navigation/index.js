@@ -34,7 +34,6 @@ const Navigation = () => {
     const listener = data => {
       if (data.payload.event === 'signIn' || data.payload.event === 'signOut'){
         checkUser();
-        DataStore.clear();
       }
     };
 
@@ -53,20 +52,12 @@ const Navigation = () => {
  return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Home'  screenOptions={{headerShown: false}}>
-        {user ? (
-          <>
-          <Stack.Screen name='User'>{(props) => <UserHomeScreen {...props} user={user} setUser={setUser}/>}</Stack.Screen>
-          <Stack.Screen name='AddPlants'>{(props) => <AddPlantScreen {...props} user={user}/>}</Stack.Screen>
-          <Stack.Screen name='ViewPlant'>{(props) => <ViewPlantScreen {...props} user={user}/>}</Stack.Screen>
-          </>
-        ) : (
-          <>
-            
-            <Stack.Screen name='Home' component={HomeScreen} />
-            <Stack.Screen name='SignIn' component={SignInScreen} />
-            <Stack.Screen name='SignUp' component={SignUpScreen} />
-          </>
-        )}
+        <Stack.Screen name='User'>{(props) => <UserHomeScreen {...props} user={user} setUser={setUser}/>}</Stack.Screen>
+        <Stack.Screen name='AddPlants'>{(props) => <AddPlantScreen {...props} user={user}/>}</Stack.Screen>
+        <Stack.Screen name='ViewPlant'>{(props) => <ViewPlantScreen {...props} user={user}/>}</Stack.Screen>
+        <Stack.Screen name='Home' component={HomeScreen} />
+        <Stack.Screen name='SignIn' component={SignInScreen} />
+        <Stack.Screen name='SignUp' component={SignUpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
  )
