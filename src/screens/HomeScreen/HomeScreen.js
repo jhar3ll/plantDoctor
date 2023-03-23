@@ -27,7 +27,7 @@ const HomeScreen = () => {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.loginView}>
               <View style={styles.loginForm}>
-                <SignInScreen loginVisible={loginVisible} setLoginVisible={setLoginVisible}/>
+                <SignInScreen loginVisible={loginVisible} setLoginVisible={setLoginVisible} closeIcon={closeIcon}/>
                 <Pressable style={styles.closeButton} onPress={() => {setLoginVisible(!loginVisible)}}>{closeIcon}</Pressable>
               </View>
             </View>
