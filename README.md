@@ -9,10 +9,11 @@ updates the plant name or water frequency, the results are updated to the databa
 if plants have not been watered after a certain time-period.
 
 Use Plant Doctor today and never forget to water your plants again!
+
 <img src="https://user-images.githubusercontent.com/53156293/229595606-40c20426-aa06-409e-a8b6-b72127c7c119.PNG" width=50% height=50%>
-![IMG_0248](https://user-images.githubusercontent.com/53156293/229595608-38d6c825-9fa3-4d2a-b1fc-83395bc75723.PNG)
-![IMG_0249](https://user-images.githubusercontent.com/53156293/229595609-c87f0f40-c4c5-4942-acc5-7ae669513355.PNG)
-![IMG_0250](https://user-images.githubusercontent.com/53156293/229595611-6a2d08bc-ffd0-4901-bfeb-5261c1283edc.PNG)
-![IMG_0251](https://user-images.githubusercontent.com/53156293/229595614-b2987666-53b0-46a9-af70-c291afff3662.PNG)
-![IMG_0252](https://user-images.githubusercontent.com/53156293/229595617-b5e7cd9d-c96d-4606-8f97-98c4beae45da.PNG)
-![IMG_0253](https://user-images.githubusercontent.com/53156293/229595619-b006efee-b632-4ad0-b260-b23d1fbd18b3.PNG)
+<img src="https://user-images.githubusercontent.com/53156293/229595608-38d6c825-9fa3-4d2a-b1fc-83395bc75723.PNG" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/53156293/229595609-c87f0f40-c4c5-4942-acc5-7ae669513355.PNG" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/53156293/229595611-6a2d08bc-ffd0-4901-bfeb-5261c1283edc.PNG" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/53156293/229595614-b2987666-53b0-46a9-af70-c291afff3662.PNG" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/53156293/229595617-b5e7cd9d-c96d-4606-8f97-98c4beae45da.PNG" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/53156293/229595619-b006efee-b632-4ad0-b260-b23d1fbd18b3.PNG" width=50% height=50%>
