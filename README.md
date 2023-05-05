@@ -1,4 +1,4 @@
-# plantDoctor
+# Plant Doctor
 
 Plant Doctor is a single-page mobile application that helps you to keep track of your home plants and their watering needs. Create an account and add at least
 one plant to begin. After giving your plant a name and a watering frequency, you can check off your daily waterings as you complete them. Each check corresponds to a 
